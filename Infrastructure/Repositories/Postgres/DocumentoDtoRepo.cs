@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories.Postgres
 {
-    public class DocumentoRepo : IDocumentoDtoRepo
+    public class DocumentoDtoRepo : IDocumentoDtoRepo
     {
         private readonly DbContext _dbContext;
         private readonly DbSet<DocumentoDto> _documentos;
         private readonly IMovimientoDtoRepo _movimientoRepo;
 
-        public DocumentoRepo(PostgresCPEContext dbContext, IMovimientoDtoRepo movimientoRepo)
+        public DocumentoDtoRepo(PostgresCPEContext dbContext, IMovimientoDtoRepo movimientoRepo)
         {
             _movimientoRepo = movimientoRepo;
             _documentos = dbContext.documentos;

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class ProductRepo : IProductoSQLRepo
+    public class ProductoSQLRepo : IProductoSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
         private readonly DbSet<ProductoSQL> _productos;
-        public ProductRepo(ContpaqiSQLContext contpaqiSQLContext) 
+        public ProductoSQLRepo(ContpaqiSQLContext contpaqiSQLContext) 
         {
             _context = contpaqiSQLContext;
             _productos = _context.Set<ProductoSQL>();

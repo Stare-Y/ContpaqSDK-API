@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class MovimientoRepo : IMovimientoSQLRepo
+    public class MovimientoSQLRepo : IMovimientoSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
         private readonly DbSet<MovimientoSQL> _movimientos;
 
-        public MovimientoRepo(ContpaqiSQLContext context)
+        public MovimientoSQLRepo(ContpaqiSQLContext context)
         {
             _context = context;
             _movimientos = _context.Set<MovimientoSQL>();

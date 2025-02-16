@@ -5,6 +5,7 @@ using Core.Application.UseCases.SDK;
 using Core.Application.UseCases.SQL.ClienteProveedor;
 using Core.Application.UseCases.SQL.Documentos;
 using Core.Application.UseCases.SQL.Productos;
+using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories.DTOs;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
@@ -66,13 +67,13 @@ namespace Pedidos_CPE.DI
             });
             builder.Services.AddSingleton<SDKRepo>();
             builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
-            builder.Services.AddScoped<IProductoSQLRepo, ProductRepo>();
-            builder.Services.AddScoped<IClienteProveedorSQLRepo, ClienteProveedorRepo>();
-            builder.Services.AddScoped<IDocumentoSQLRepo, DocumentRepo>();
+            builder.Services.AddScoped<IProductoSQLRepo, ProductoSQLRepo>();
+            builder.Services.AddScoped<IClienteProveedorSQLRepo, ClienteProveedorSQLRepo>();
+            builder.Services.AddScoped<IDocumentoSQLRepo, DocumentoSQLRepo>();
 
             //for postgres
-            builder.Services.AddScoped<IDocumentoDtoRepo, DocumentoRepo>();
-            builder.Services.AddScoped<IMovimientoSQLRepo, IMovimientoSQLRepo>();
+            builder.Services.AddScoped<IDocumentoDtoRepo, DocumentoDtoRepo>();
+            builder.Services.AddScoped<IMovimientoDtoRepo, MovimientoDtoRepo>();
 
 
             //UseCases

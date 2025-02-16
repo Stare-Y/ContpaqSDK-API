@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class DocumentRepo : IDocumentoSQLRepo
+    public class DocumentoSQLRepo : IDocumentoSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
         private readonly DbSet<DocumentoSQL> _documents;
         private readonly DbSet<ConceptoSQL> _concepts;
 
 
-        public DocumentRepo(ContpaqiSQLContext context)
+        public DocumentoSQLRepo(ContpaqiSQLContext context)
         {
             _context = context;
             _documents = _context.Set<DocumentoSQL>();

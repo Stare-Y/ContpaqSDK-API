@@ -22,7 +22,7 @@ namespace Pedidos_CPE.Controllers
             try
             {
                 List<ClienteProveedorDto> matches = new(await _searchClienteProveedorByNameSQL.Execute(nombre));
-                return Ok(new ApiResponse { Message = "ClienteProveedor encontrado", Data = matches, Success = true });
+                return Ok(new ApiResponse { Message = $"Se encontraron {matches.Count} clientes/proveedores para la busqueda: {nombre}", Data = matches, Success = true });
             }
             catch (Exception ex)
             {

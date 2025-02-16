@@ -5,12 +5,12 @@ using Core.Domain.Interfaces.Repositories.DTOs;
 
 namespace Infrastructure.Repositories.Postgres
 {
-    public class MovimientoRepo : IMovimientoDtoRepo
+    public class MovimientoDtoRepo : IMovimientoDtoRepo
     {
         private readonly DbSet<MovimientoDto> _movimientos;
         private readonly PostgresCPEContext _dbContext;
 
-        public MovimientoRepo(PostgresCPEContext dbContext)
+        public MovimientoDtoRepo(PostgresCPEContext dbContext)
         {
             _movimientos = dbContext.movimientos;
             _dbContext = dbContext;

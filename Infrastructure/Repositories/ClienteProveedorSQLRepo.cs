@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class ClienteProveedorRepo : IClienteProveedorSQLRepo
+    public class ClienteProveedorSQLRepo : IClienteProveedorSQLRepo
     {
         private readonly DbSet<ClienteProveedorSQL> _clientesProveedores;
-        public ClienteProveedorRepo(ContpaqiSQLContext context)
+        public ClienteProveedorSQLRepo(ContpaqiSQLContext context)
         {
             _clientesProveedores = context.clientesProveedores;
         }
