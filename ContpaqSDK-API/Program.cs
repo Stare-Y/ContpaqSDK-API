@@ -1,7 +1,7 @@
 using Core.Application.UseCases.SDK;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;
-using Infrastructure.Repositories;
+using Infrastructure.Repositories.SQL;
 using Infrastructure.Services;
 using System.Text.Json;
 

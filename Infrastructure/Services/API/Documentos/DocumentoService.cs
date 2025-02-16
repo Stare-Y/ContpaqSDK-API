@@ -1,4 +1,7 @@
 ﻿using Core.Application.DTOs;
+using Core.Domain.Interfaces.Repositories.DTOs;
+using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Newtonsoft.Json;
 
@@ -6,11 +9,10 @@ namespace Infrastructure.Services.API.Documentos
 {
     public class DocumentoService : IDocumentoService
     {
-        private readonly HttpClient _client;
-
-        public DocumentoService(HttpClient client)
+        private readonly IApiService _apiService;
+        public DocumentoService(IApiService apiService)
         {
-            _client = client;
+            _apiService = apiService;
         }
 
         public async Task<DocumentDto> GetByConceptoSerieAndFolioSDKAsync<DocumentDto>(string codConcepto, string serie, string folio)

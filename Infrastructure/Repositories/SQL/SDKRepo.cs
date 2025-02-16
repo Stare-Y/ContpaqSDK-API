@@ -6,7 +6,7 @@ using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Exceptions;
 using Core.Domain.Entities.DTOs;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.SQL
 {
     public class SDKRepo : ISDKRepo
     {
@@ -46,7 +46,7 @@ namespace Infrastructure.Repositories
 
         public void InicializarSDK()
         {
-            
+
             SDK.SetCurrentDirectory(_dirBinarios);
             SDK.SetDllDirectory(_dirBinarios);
 
@@ -88,7 +88,7 @@ namespace Infrastructure.Repositories
             {
                 _logger.Log($"NombrePAQ: {_nombrePAQ} establecido con exito.");
             }
-                   
+
             _logger.Log($"Intentando abrir la empresa ({_empresaDefault})...");
             attempts = 0;
             while (true)
@@ -116,7 +116,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                 SDK.fCierraEmpresa();
+                SDK.fCierraEmpresa();
             }
             catch (Exception)
             {
@@ -206,9 +206,9 @@ namespace Infrastructure.Repositories
                 {
                     throw new SDKException($"Error dando de alta el documento: ", lError);
                 }
-                
-                return new Dictionary<int, double> { 
-                    { idDocumento, folio } 
+
+                return new Dictionary<int, double> {
+                    { idDocumento, folio }
                 };
             });
         }
@@ -261,7 +261,7 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
             }
-            
+
             await Task.Run(() =>
             {
                 int lError = SDK.fBuscarIdDocumento(idDocumento);
@@ -314,7 +314,7 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
             }
-            
+
             return await Task.Run(() =>
             {
                 tMovimiento movimiento = movimientoDto.ToSDKMovimiento();
