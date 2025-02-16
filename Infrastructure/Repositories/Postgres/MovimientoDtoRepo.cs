@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data;
 using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories.DTOs;
+using Infrastructure.Context;
 
 namespace Infrastructure.Repositories.Postgres
 {

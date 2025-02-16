@@ -1,10 +1,10 @@
 ﻿using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
-using Infrastructure.Data;
+using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.SQL
 {
     public class MovimientoSQLRepo : IMovimientoSQLRepo
     {

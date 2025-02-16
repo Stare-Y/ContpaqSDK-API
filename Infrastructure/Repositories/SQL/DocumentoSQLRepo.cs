@@ -1,10 +1,9 @@
 ﻿using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
-using Infrastructure.Data;
-using Infrastructure.Exceptions;
+using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.SQL
 {
     public class DocumentoSQLRepo : IDocumentoSQLRepo
     {
@@ -22,7 +21,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<DocumentoSQL>> GetRangeByFechaConceptoSerieAsync(DateTime fechaInicio, DateTime fechaFin, string codigoConcepto, string serie, CancellationToken cancellationToken = default)
         {
-            
+
             var concepto = await _concepts.AsNoTracking().Where(c => c.CCODIGOCONCEPTO == codigoConcepto).FirstOrDefaultAsync();
             if (concepto == null)
             {
@@ -32,14 +31,14 @@ namespace Infrastructure.Repositories
             return await _documents.AsNoTracking().Where(
                 d =>
                 d.CFECHA >= fechaInicio && d.CFECHA <= fechaFin &&
-                d.CIDCONCEPTODOCUMENTO == concepto.CIDCONCEPTODOCUMENTO && d.CSERIEDOCUMENTO == serie )
+                d.CIDCONCEPTODOCUMENTO == concepto.CIDCONCEPTODOCUMENTO && d.CSERIEDOCUMENTO == serie)
                 .ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<DocumentoSQL>> GetRangeByFechaSerieAsync(DateTime fechaInicio, DateTime fechaFin, string serie, CancellationToken cancellationToken = default)
         {
-            
-            var pedidos =  await _documents.AsNoTracking().Where(d =>
+
+            var pedidos = await _documents.AsNoTracking().Where(d =>
                 d.CFECHA >= fechaInicio && d.CFECHA <= fechaFin &&
                 d.CSERIEDOCUMENTO == serie)
                 .ToListAsync(cancellationToken);
@@ -58,7 +57,7 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (result == null)
-                throw new NotFoundArgumentException($"No se encontraron coincidencias para el folio: {folio}");
+                throw new KeyNotFoundException($"No se encontraron coincidencias para el folio: {folio}");
 
             return result;
         }
@@ -70,8 +69,8 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (result == null)
-                throw new NotFoundArgumentException($"No se encontraron coincidencias para el id: {id}");
-            
+                throw new KeyNotFoundException($"No se encontraron coincidencias para el id: {id}");
+
             return result;
         }
 

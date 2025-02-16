@@ -1,15 +1,15 @@
 ﻿using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
-using Infrastructure.Data;
+using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.SQL
 {
     public class ProductoSQLRepo : IProductoSQLRepo
     {
         private readonly ContpaqiSQLContext _context;
         private readonly DbSet<ProductoSQL> _productos;
-        public ProductoSQLRepo(ContpaqiSQLContext contpaqiSQLContext) 
+        public ProductoSQLRepo(ContpaqiSQLContext contpaqiSQLContext)
         {
             _context = contpaqiSQLContext;
             _productos = _context.Set<ProductoSQL>();
@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
 
             if (product == null)
                 throw new KeyNotFoundException($"No se encontro el producto con id: {idProducto}");
-            
+
             return product;
         }
 
@@ -40,7 +40,7 @@ namespace Infrastructure.Repositories
 
             if (product == null)
                 throw new KeyNotFoundException($"No se encontro el producto con codigo: {codigoProducto}");
-            
+
             return product;
         }
 

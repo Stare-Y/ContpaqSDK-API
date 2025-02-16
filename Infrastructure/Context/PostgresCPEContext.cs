@@ -1,7 +1,7 @@
 ﻿using Core.Domain.Entities.DTOs;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Context
 {
     public class PostgresCPEContext : DbContext
     {
@@ -152,7 +152,7 @@ namespace Infrastructure.Data
                 .HasColumnName("agasto1")
                 .HasDefaultValue(0);
 
-            modelBuilder.Entity<DocumentoDto>() 
+            modelBuilder.Entity<DocumentoDto>()
                 .Property(p => p.Gasto2)
                 .HasColumnName("agasto2")
                 .HasDefaultValue(0);

@@ -1,7 +1,7 @@
 ﻿using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
-using Infrastructure.Data;
+using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.SQL
 {
     public class ClienteProveedorSQLRepo : IClienteProveedorSQLRepo
     {

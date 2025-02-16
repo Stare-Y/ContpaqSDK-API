@@ -1,4 +1,5 @@
 using Core.Domain.Interfaces.Repositories.SQL;
+using Infrastructure.Repositories;
 using Infrastructure.Repositories.SQL;
 using Pedidos_CPE.DI;
 

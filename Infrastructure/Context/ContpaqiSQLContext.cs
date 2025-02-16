@@ -1,7 +1,7 @@
 ﻿using Core.Domain.Entities.SQL;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Context
 {
     public class ContpaqiSQLContext : DbContext
     {

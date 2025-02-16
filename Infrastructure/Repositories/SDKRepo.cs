@@ -6,7 +6,7 @@ using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Exceptions;
 using Core.Domain.Entities.DTOs;
 
-namespace Infrastructure.Repositories.SQL
+namespace Infrastructure.Repositories
 {
     public class SDKRepo : ISDKRepo
     {
@@ -145,13 +145,13 @@ namespace Infrastructure.Repositories.SQL
                 while (true)
                 {
                     //si empresa es test, se abre la empresa default, solo para el caso de uso testSDK
-                    lError = SDK.fAbreEmpresa(_dirEmpresas + (empresa == "test" ? _empresaDefault: empresa));
+                    lError = SDK.fAbreEmpresa(_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa));
                     if (lError != 0)
                     {
                         Thread.Sleep(500);
                         if (++attempts > 4)
                         {
-                            throw new SDKException($"No se pudo abrir la empresa: {_dirEmpresas + (empresa == "test" ? _empresaDefault: empresa)}, Directortio actual: {Directory.GetCurrentDirectory()} ({lError}): ", lError);
+                            throw new SDKException($"No se pudo abrir la empresa: {_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa)}, Directortio actual: {Directory.GetCurrentDirectory()} ({lError}): ", lError);
                         }
                         Thread.Sleep(500);
                     }
