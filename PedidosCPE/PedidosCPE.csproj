@@ -75,12 +75,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Application\ApplicationLayer.csproj" />
-	  <ProjectReference Include="..\Domain\Domain.csproj" />
-	  <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="Views\ClientesProveedores\SearchClientesProveedoresView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
