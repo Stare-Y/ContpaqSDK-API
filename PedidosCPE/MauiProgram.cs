@@ -47,15 +47,11 @@ namespace PedidosCPE
 
             builder.Services.AddSingleton<TerminalSettings>(provider => terminalSettings);
 
-            builder.Services.AddHttpClient("CommonHttpClient", client =>
+            builder.Services.AddHttpClient<IApiService, ApiService>("CommonHttpClient", client =>
             {
                 client.BaseAddress = new Uri(terminalSettings.ServerUri);
                 client.Timeout = TimeSpan.FromSeconds(20);
             });
-
-            // Registrar los servicios e inyectar el HttpClient común
-            builder.Services.AddTransient<IApiService, ApiService>();
-
             builder.Services.AddTransient<IProductoService, ProductoService>();
 
             builder.Services.AddTransient<IClienteProveedorService, ClienteProveedorService>();
@@ -74,7 +70,7 @@ namespace PedidosCPE
         {
             try
             {
-                var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data/TerminalSettings.json");
+                var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data\\TerminalSettings.json");
                 if (!File.Exists(jsonPath))
                 {
                     throw new Exception($"SDKSettings.json not found on path: {jsonPath}");
@@ -100,7 +96,7 @@ namespace PedidosCPE
         {
             try
             {
-                var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data/BasculaSettings.json");
+                var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data\\BasculaSettings.json");
                 if (!File.Exists(jsonPath))
                 {
                     throw new Exception($"BasculaSettings.json not found on path: {jsonPath}");

@@ -1,6 +1,5 @@
 ﻿using Core.Application.UseCases.SQL.ClienteProveedor;
 using Core.Domain.Entities.DTOs;
-using Core.Domain.Entities.SQL;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pedidos_CPE.Controllers
