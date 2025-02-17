@@ -42,7 +42,7 @@ namespace Pedidos_CPE.Controllers
 
         [HttpPost]
         [Route("/SDK/addDocumentoYMovimientos")]
-        public async Task<ActionResult<ApiResponse>> AddDocumentoYMovimientosSDK([FromBody]AddDocumentoYMovimientosSDKRequest request)
+        public async Task<ActionResult<ApiResponse>> AddDocumentoYMovimientosSDK(AddDocumentoYMovimientosSDKRequest request)
         {
             try
             {

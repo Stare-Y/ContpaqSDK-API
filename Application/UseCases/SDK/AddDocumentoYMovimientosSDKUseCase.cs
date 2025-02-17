@@ -1,4 +1,5 @@
 ﻿using Core.Domain.Entities.DTOs;
+using Core.Domain.Exceptions;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
 namespace Core.Application.UseCases.SDK
@@ -23,7 +24,16 @@ namespace Core.Application.UseCases.SDK
                 var canWork = await _sdkRepo.StartTransaction(empresa);
                 if (canWork)
                 {
-                    Dictionary<int, double> addDocumentResult = await _sdkRepo.AddDocumento(documentoDto);
+                    Dictionary<int, double> addDocumentResult = new();
+                    try
+                    {
+                        addDocumentResult = await _sdkRepo.AddDocumento(documentoDto);
+                    }
+                    catch(SDKException ex)
+                    {
+                        _sdkRepo.StopTransaction();
+                        throw new Exception(ex.Message);
+                    }
 
                     int idDocumento = addDocumentResult.Keys.First();
 
