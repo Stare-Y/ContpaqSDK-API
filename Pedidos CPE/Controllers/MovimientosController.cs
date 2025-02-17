@@ -20,7 +20,7 @@ namespace Pedidos_CPE.Controllers
 
         [HttpPatch]
         [Route("Movimientos")]
-        public async Task<ActionResult<ApiResponse>> PatchMovimientosUnidades([FromBody]List<MovimientoDto> movimientos)
+        public async Task<ActionResult<ApiResponse>> PatchMovimientos([FromBody]List<MovimientoDto> movimientos)
         {
             try
             {

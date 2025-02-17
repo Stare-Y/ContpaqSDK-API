@@ -3,6 +3,7 @@ using Core.Application.ViewModels.ObservableEntity;
 using Core.Domain.Entities;
 using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
+using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using System.Collections.ObjectModel;
 
 namespace Core.Application.ViewModels

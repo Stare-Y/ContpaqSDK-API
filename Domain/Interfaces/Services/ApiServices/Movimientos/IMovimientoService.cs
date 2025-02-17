@@ -26,5 +26,13 @@ namespace Core.Domain.Interfaces.Services.ApiServices.Movimientos
         /// <param name="movimientos"></param>
         /// <returns></returns>
         Task PatchRangeAsync(IEnumerable<MovimientoDto> movimientos);
+
+        /// <summary>
+        /// Agrega un rango de movimientos pertenecientes a un documento ya valido
+        /// </summary>
+        /// <param name="movimientos"></param>
+        /// <returns></returns>
+        Task PostRangeAsync(IEnumerable<MovimientoDto> movimientos);
+
     }
 }
