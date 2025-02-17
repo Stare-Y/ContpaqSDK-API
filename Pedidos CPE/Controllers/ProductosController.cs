@@ -25,7 +25,7 @@ namespace Pedidos_CPE.Controllers
             try
             {
                 var productos = await _searchProductosByNameSQLUseCase.Execute(nombre);
-                return Ok(new ApiResponse { Message = "Productos encontrados", Data = productos, Success = true });
+                return Ok(new ApiResponse { Message = $"Se encontraron {productos.Count()} productos con la busqueda: {nombre}", Data = productos, Success = true });
             }
             catch (Exception ex)
             {

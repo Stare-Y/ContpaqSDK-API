@@ -91,6 +91,7 @@ namespace Pedidos_CPE.DI
 
             builder.Services.AddTransient<SearchProductosByNameSQLUseCase>();
             builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
+            builder.Services.AddTransient<GetProductoByCodigoSQLUseCase>();
 
             #endregion
 
