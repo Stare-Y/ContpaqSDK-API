@@ -22,7 +22,7 @@ namespace Core.Application.UseCases.Postgres.Movimientos
 
         public async Task<IEnumerable<MovimientoDto>> Execute(int id)
         {
-            _logger.Log("Obteniendo movimientos por id de documento de Postgres");
+            _logger.Log($"Obteniendo movimientos por id de documento {id}");
             return await _movimientoRepo.GetByDocumentoDtoIdAsync(id);
         }
     }

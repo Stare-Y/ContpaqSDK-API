@@ -37,6 +37,8 @@ namespace Core.Application.UseCases.Postgres
                 await _movimientoDtoRepo.AddAsync(movimiento);
             }
 
+            _logger.Log($"Se agregaron {movimientoDtos.Count} movimientos para el documento {addedDocument.IdPostgres}");
+
             return addedDocument;
         }
     }

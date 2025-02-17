@@ -22,7 +22,7 @@ namespace Infrastructure.Context
 
             modelBuilder.Entity<MovimientoDto>()
                 .Property(m => m.IdDocumento)
-                .HasColumnName("id_pedido")
+                .HasColumnName("id_documento")
                 .IsRequired(true);
 
             modelBuilder.Entity<MovimientoDto>()
@@ -43,6 +43,16 @@ namespace Infrastructure.Context
             modelBuilder.Entity<MovimientoDto>()
                 .Property(m => m.Unidades)
                 .HasColumnName("unidades")
+                .IsRequired(true);
+
+            modelBuilder.Entity<MovimientoDto>()
+                .Property(m => m.Costo)
+                .HasColumnName("costo")
+                .IsRequired(true);
+
+            modelBuilder.Entity<MovimientoDto>().
+                Property(m => m.Precio)
+                .HasColumnName("precio")
                 .IsRequired(true);
 
             modelBuilder.Entity<MovimientoDto>()

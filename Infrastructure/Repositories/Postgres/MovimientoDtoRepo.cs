@@ -19,10 +19,13 @@ namespace Infrastructure.Repositories.Postgres
         public async Task AddRangeAsync(IEnumerable<MovimientoDto> movimientos, CancellationToken cancellationToken)
         {
             await _movimientos.AddRangeAsync(movimientos, cancellationToken);
+            await _dbContext.SaveChangesAsync();
         }
         public async Task<MovimientoDto> AddAsync(MovimientoDto movimiento, CancellationToken cancellationToken)
         {
             await _movimientos.AddAsync(movimiento, cancellationToken);
+
+            await _dbContext.SaveChangesAsync();
 
             return movimiento;
         }

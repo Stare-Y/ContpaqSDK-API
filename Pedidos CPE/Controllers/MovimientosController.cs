@@ -9,11 +9,13 @@ namespace Pedidos_CPE.Controllers
     {
         private readonly UpdateMovimientosPostgresUseCase _updateMovimientos;
         private readonly GetMovimientosByDocumentoIdPostgresUseCase _getMovimientosByDocumentoIdPostgresUseCase;
+        private readonly Core.Domain.Interfaces.Services.ILogger _logger;
 
-        public MovimientosController(UpdateMovimientosPostgresUseCase updateMovimientos, GetMovimientosByDocumentoIdPostgresUseCase getMovimientosByDocumentoIdPostgresUseCase)
+        public MovimientosController(UpdateMovimientosPostgresUseCase updateMovimientos, GetMovimientosByDocumentoIdPostgresUseCase getMovimientosByDocumentoIdPostgresUseCase, Core.Domain.Interfaces.Services.ILogger logger)
         {
             _updateMovimientos = updateMovimientos;
             _getMovimientosByDocumentoIdPostgresUseCase = getMovimientosByDocumentoIdPostgresUseCase;
+            _logger = logger;
         }
 
         [HttpPatch]
@@ -27,7 +29,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return BadRequest(new ApiResponse { Message = $"Error actualizando los movimientos. ", Success = false, ErrorDetails = ex.Message });
             }
         }
 
@@ -42,7 +44,8 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.Log($"Error obteniendo los movimientos del documento {documentoId}: " + ex.Message + ex.StackTrace);
+                return BadRequest(new ApiResponse { Message = $"Error obteniendo los movimientos del documento {documentoId}. ", Success = false, ErrorDetails = ex.Message });
             }
         }
     }
