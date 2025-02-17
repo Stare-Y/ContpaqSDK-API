@@ -2,9 +2,7 @@
 using Core.Application.ViewModels.ObservableEntity;
 using Core.Domain.Entities;
 using Core.Domain.Entities.DTOs;
-using Core.Domain.Entities.SDK.Estructuras;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
-using Domain.SDK_Comercial;
 using System.Collections.ObjectModel;
 
 namespace Core.Application.ViewModels
@@ -13,55 +11,48 @@ namespace Core.Application.ViewModels
     {
         private readonly IDocumentoService _documentoService = null!;
         private readonly TerminalSettings _terminalSettings = null!;
-        private DocumentoDto _documento = null!;
-        private ClienteProveedorDto _clienteProveedorSeleccionado = null!;
+
         public DocumentoDto Documento
         {
-            get => _documento;
-            set
-            {
-                _documento = value;
-                OnPropertyChanged(nameof(Documento));
-            }
+            get;
+            set;
         }
-        private ObservableCollection<ViewProductoUnidades> _productos = new();
+
         public ObservableCollection<ViewProductoUnidades> Productos
         {
-            get => _productos;
-            set
-            {
-                _productos = value;
-                OnPropertyChanged(nameof(Productos));
-            }
+            get;
+            set;
         }
 
         public ClienteProveedorDto ClienteProveedorSeleccionado
         {
-            get => _clienteProveedorSeleccionado;
-            set
-            {
-                _clienteProveedorSeleccionado = value;
-                OnPropertyChanged(nameof(ClienteProveedorSeleccionado));
-            }
+            get;
+            set;
         }
 
         public VMCreateDocumento(IDocumentoService documentoService, TerminalSettings terminalSettings)
         {
             _documentoService = documentoService;
-            _terminalSettings = terminalSettings;
+            _terminalSettings = terminalSettings ?? throw new ArgumentNullException(nameof(terminalSettings));
 
-            _documento = new();
-            _documento.CodConcepto = terminalSettings.CodigoConcepto;
-            _documento.Serie = terminalSettings.Serie;
-            _documento.CodigoCteProv = terminalSettings.CodigoCteProv;
-            _documento.Referencia = terminalSettings.Referencia;
+            Documento = new();
+            Documento.CodConcepto = terminalSettings.CodigoConcepto;
+            Documento.Serie = terminalSettings.Serie;
+            Documento.CodigoCteProv = terminalSettings.CodigoCteProv;
+            Documento.Referencia = terminalSettings.Referencia;
+            Documento.Fecha = DateTime.Now.ToString("MM/dd/yyyy");
 
-            _documento.Fecha = DateTime.Now.ToString("MM/dd/yyyy");
-            _clienteProveedorSeleccionado = new ClienteProveedorDto();
-            _clienteProveedorSeleccionado.CRAZONSOCIAL = "Seleccionar Socio";
+            ClienteProveedorSeleccionado = new ClienteProveedorDto();
+            ClienteProveedorSeleccionado.CRAZONSOCIAL = "Seleccionar Socio";
+            Productos = new ();
         }
 
-        public VMCreateDocumento() { }
+        public VMCreateDocumento()
+        {
+            Documento = new DocumentoDto();
+            ClienteProveedorSeleccionado = new ClienteProveedorDto { CRAZONSOCIAL = "Seleccionar Socio (Default BUilder)" };
+            Productos = new();
+        }
 
         /// <summary>
         /// Deberias hacer un pop despues de usar este metodo, claro, si sae bien
@@ -70,9 +61,14 @@ namespace Core.Application.ViewModels
         /// <exception cref="Exception"></exception>
         public async Task EnviarDocumentoMovimientos()
         {
-            if (_clienteProveedorSeleccionado.CCODIGOCLIENTE == null)
+            if (ClienteProveedorSeleccionado.CCODIGOCLIENTE == null)
             {
                 throw new Exception("Debe seleccionar un cliente valido");
+            }
+
+            if (_terminalSettings == null)
+            {
+                throw new ArgumentNullException();
             }
 
             //validamos y llenamos los movimientos
@@ -94,7 +90,7 @@ namespace Core.Application.ViewModels
 
             Documento.RazonSocial = ClienteProveedorSeleccionado.CRAZONSOCIAL;
 
-            Documento = await _documentoService.PostPendientes(_documento, movimientos);
+            Documento = await _documentoService.PostPendientes(Documento, movimientos);
 
             OnPropertyChanged(nameof(Documento));
         }

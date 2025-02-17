@@ -3,10 +3,12 @@ using Core.Application.ViewModels;
 using Core.Domain.Entities;
 using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.ClienteProveedor;
+using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using Core.Domain.Interfaces.Services.ApiServices.Productos;
 using Infrastructure.Services.API;
 using Infrastructure.Services.API.CLienteProveedor;
+using Infrastructure.Services.API.Documentos;
 using Infrastructure.Services.API.Movimientos;
 using Infrastructure.Services.API.Productos;
 using Microsoft.Extensions.Logging;
@@ -35,9 +37,10 @@ namespace PedidosCPE
 #endif
             ConfigureServices(builder);
 
-            ServiceProvider = builder.Services.BuildServiceProvider();
+            var app = builder.Build();
+            ServiceProvider = app.Services; // ✅ Correct way to get it
 
-            return builder.Build();
+            return app;
         }
 
         private static void ConfigureServices(MauiAppBuilder builder)
@@ -46,6 +49,7 @@ namespace PedidosCPE
             BasculaSettings basculaSettings = LoadBasculaSettings();
 
             builder.Services.AddSingleton<TerminalSettings>(provider => terminalSettings);
+            builder.Services.AddSingleton<BasculaSettings>(provider => basculaSettings);
 
             builder.Services.AddHttpClient<IApiService, ApiService>("CommonHttpClient", client =>
             {
@@ -57,6 +61,8 @@ namespace PedidosCPE
             builder.Services.AddTransient<IClienteProveedorService, ClienteProveedorService>();
 
             builder.Services.AddTransient<IMovimientoService, MovimientoService>();
+
+            builder.Services.AddTransient<IDocumentoService, DocumentoService>();
 
             builder.Services.AddTransient<VMSearchProductos>();
             builder.Services.AddTransient<VMCreateDocumento>();
@@ -73,17 +79,17 @@ namespace PedidosCPE
                 var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data\\TerminalSettings.json");
                 if (!File.Exists(jsonPath))
                 {
-                    throw new Exception($"SDKSettings.json not found on path: {jsonPath}");
+                    throw new Exception($"TerminalSettings.json not found on path: {jsonPath}");
                 }
 
                 string json = File.ReadAllText(jsonPath);
                 if (string.IsNullOrEmpty(json))
                 {
-                    throw new Exception("SDKSettings.json is empty");
+                    throw new Exception("TerminalSettings.json is empty");
                 }
                 else
                 {
-                    return JsonSerializer.Deserialize<TerminalSettings>(json) ?? throw new Exception("Json SDKSettings invalido");
+                    return JsonSerializer.Deserialize<TerminalSettings>(json) ?? throw new Exception("Json TerminalSettings invalido");
                 }
             }
             catch (Exception)

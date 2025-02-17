@@ -1,8 +1,12 @@
-﻿using Core.Domain.Interfaces.Services.ApiServices;
+﻿using Core.Application.UseCases.Postgres.Requests;
+using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Services.ApiServices;
+using Core.Domain.Interfaces.Services.ApiServices.Documentos;
+using Newtonsoft.Json;
 
 namespace Infrastructure.Services.API.Documentos
 {
-    public class DocumentoService 
+    public class DocumentoService : IDocumentoService
     {
         private readonly IApiService _apiService;
         public DocumentoService(IApiService apiService)
@@ -10,9 +14,66 @@ namespace Infrastructure.Services.API.Documentos
             _apiService = apiService;
         }
 
+        public async Task<IEnumerable<DocumentoDto>> GetPendientes()
+        {
+            var response = await _apiService.GetAsync<ApiResponse>("/Pendientes");
+
+            if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
+                throw new Exception("Error al obtener documentos pendientes: " + response.ErrorDetails);
+
+            // Deserialize manually
+            var json = JsonConvert.SerializeObject(response.Data);
+            var documentos = JsonConvert.DeserializeObject<List<DocumentoDto>>(json);
+
+            return documentos ?? throw new Exception("Error al obtener documentos pendientes, la instancia de respuesta fue nula.");
+        }
+
+        public async Task<DocumentoDto> PostPendientes(DocumentoDto documento, IEnumerable<MovimientoDto> movimientoDtos)
+        {
+            var request = new AddDocumentoYMovimientosDtoRequest
+            {
+                Documento = documento,
+                Movimientos = [.. movimientoDtos]
+            };
+
+            var response = await _apiService.PostAsync<ApiResponse>("/Pendientes", request);
+
+            if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
+                throw new Exception("Error al crear documento pendiente: " + response.ErrorDetails);
+
+            // Deserialize manually
+            var json = JsonConvert.SerializeObject(response.Data);
+            var documentoCreado = JsonConvert.DeserializeObject<DocumentoDto>(json);
+
+            return documentoCreado ?? throw new Exception("Error al crear documento pendiente, la instancia de respuesta fue nula.");
+        }
+
+        public async Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements)
+        {
+            var request = new AddDocumentoYMovimientosDtoRequest
+            {
+                Documento = document,
+                Movimientos = [.. movements]
+            };
+            var response = await _apiService.PostAsync<ApiResponse>("/SDK", request);
+            if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
+                throw new Exception("Error al crear documento en SDK: " + response.ErrorDetails);
+            // Deserialize manually
+            var json = JsonConvert.SerializeObject(response.Data);
+            var documentoCreado = JsonConvert.DeserializeObject<Dictionary<int, double>>(json);
+            return documentoCreado ?? throw new Exception("Error al crear documento en SDK, la instancia de respuesta fue nula.");
+        }
+
+        public async Task PutAsync(DocumentoDto documento)
+        {
+            var response = await _apiService.PutAsync<ApiResponse>("/Pendientes", documento);
+
+            if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
+                throw new Exception("Error al actualizar documento pendiente: " + response.ErrorDetails);
+        }
         //public async Task<DocumentDto> GetByConceptoSerieAndFolioSDKAsync<DocumentDto>(string codConcepto, string serie, string folio)
         //{
-            
+
         //    ApiResponse result = await _apiService.GetAsync<ApiResponse>($"/getDocumentByConceptoFolioAndSerieSDK/{codConcepto}/{serie}/{folio}");
 
 
