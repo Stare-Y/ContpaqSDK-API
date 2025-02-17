@@ -33,18 +33,9 @@ namespace Infrastructure.Services.API.Productos
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ProductoDto>> GetByCodigosAsync(IEnumerable<string> codigos)
+        public Task<IEnumerable<ProductoDto>> GetByCodigosAsync(IEnumerable<string> codigos)
         {
-            var response = await _apiService.GetAsync<ApiResponse>($"Productos/ByCodigos?codigos={string.Join(",", codigos)}");
-
-            if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
-                throw new Exception($"Error al buscar productos por codigos {string.Join(",", codigos)}: " + response.ErrorDetails);
-
-            // Deserialize manually
-            var json = JsonConvert.SerializeObject(response.Data);
-            var productos = JsonConvert.DeserializeObject<List<ProductoDto>>(json);
-
-            return productos ?? throw new Exception("Error al buscar productos por codigos, la instancia de respuesta fue nula.");
+            throw new NotImplementedException();
         }
     }
 }
