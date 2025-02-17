@@ -2,6 +2,7 @@
 {
     public class TerminalSettings
     {
+        public string Empresa { get; set; } = string.Empty;
         public string CodigoConcepto { get; set; } = string.Empty;
         public string Serie { get; set; } = string.Empty;
         public string CodigoCteProv { get; set; } = string.Empty;

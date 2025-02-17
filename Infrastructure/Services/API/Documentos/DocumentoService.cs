@@ -1,4 +1,6 @@
 ﻿using Core.Application.UseCases.Postgres.Requests;
+using Core.Application.UseCases.SDK.Requests;
+using Core.Domain.Entities;
 using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
@@ -9,9 +11,11 @@ namespace Infrastructure.Services.API.Documentos
     public class DocumentoService : IDocumentoService
     {
         private readonly IApiService _apiService;
-        public DocumentoService(IApiService apiService)
+        private readonly TerminalSettings _terminalSettings;
+        public DocumentoService(IApiService apiService, TerminalSettings terminalSettings)
         {
             _apiService = apiService;
+            _terminalSettings = terminalSettings;
         }
 
         public async Task<IEnumerable<DocumentoDto>> GetPendientes()
@@ -50,17 +54,22 @@ namespace Infrastructure.Services.API.Documentos
 
         public async Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements)
         {
-            var request = new AddDocumentoYMovimientosDtoRequest
+            var request = new AddDocumentoYMovimientosSDKRequest
             {
-                Documento = document,
-                Movimientos = [.. movements]
+                DocumentoDto = document,
+                MovimientoDtos = [.. movements],
+                Empresa = _terminalSettings.Empresa
             };
-            var response = await _apiService.PostAsync<ApiResponse>("/SDK", request);
+
+            var response = await _apiService.PostAsync<ApiResponse>("SDK/addDocumentoYMovimientos", request);
+
             if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
                 throw new Exception("Error al crear documento en SDK: " + response.ErrorDetails);
+
             // Deserialize manually
             var json = JsonConvert.SerializeObject(response.Data);
             var documentoCreado = JsonConvert.DeserializeObject<Dictionary<int, double>>(json);
+
             return documentoCreado ?? throw new Exception("Error al crear documento en SDK, la instancia de respuesta fue nula.");
         }
 

@@ -36,11 +36,7 @@ namespace Core.Application.ViewModels
             _terminalSettings = terminalSettings ?? throw new ArgumentNullException(nameof(terminalSettings));
 
             Documento = new();
-            Documento.CodConcepto = terminalSettings.CodigoConcepto;
-            Documento.Serie = terminalSettings.Serie;
-            Documento.CodigoCteProv = terminalSettings.CodigoCteProv;
-            Documento.Referencia = terminalSettings.Referencia;
-            Documento.Fecha = DateTime.Now.ToString("MM/dd/yyyy");
+            
 
             ClienteProveedorSeleccionado = new ClienteProveedorDto();
             ClienteProveedorSeleccionado.CRAZONSOCIAL = "Seleccionar Socio";
@@ -70,6 +66,13 @@ namespace Core.Application.ViewModels
             {
                 throw new ArgumentNullException();
             }
+
+            Documento.CodConcepto = _terminalSettings.CodigoConcepto;
+            Documento.Serie = _terminalSettings.Serie;
+            Documento.CodigoCteProv = _terminalSettings.CodigoCteProv;
+            Documento.Referencia = _terminalSettings.Referencia;
+            Documento.CodConcepto = _terminalSettings.CodigoConcepto;
+            Documento.Fecha = DateTime.Now.ToString("MM/dd/yyyy");
 
             //validamos y llenamos los movimientos
             var movimientos = new List<MovimientoDto>();

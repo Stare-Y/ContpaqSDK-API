@@ -48,5 +48,20 @@ namespace Infrastructure.Services.API
 
             return result == null ? throw new Exception("Hubo un error, la respuesta del servidor resulto nula") : result;
         }
+
+        public async Task<T> PatchAsync<T>(string endpoint, object data)
+        {
+            var json = JsonConvert.SerializeObject(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _client.PatchAsync(endpoint, content);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<T>(responseContent);
+
+            return result == null ? throw new Exception("Hubo un error, la respuesta del servidor resulto nula") : result;
+        }
+
     }
 }
