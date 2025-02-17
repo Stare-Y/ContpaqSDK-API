@@ -1,4 +1,5 @@
-using ApplicationLayer.ViewModels;
+
+using Core.Application.ViewModels;
 
 namespace PedidosCPE.Views.Settings;
 
@@ -8,14 +9,14 @@ public partial class EditSettingsView : ContentPage
     public EditSettingsView()
 	{
 		InitializeComponent();
-        _vmEditSettings = new VMEditSettings(Path.Combine(AppContext.BaseDirectory, "Data/SDKSettings.json"));
+        _vmEditSettings = new VMEditSettings(AppContext.BaseDirectory);
         BindingContext = _vmEditSettings;
-        FiltrarClasif1.SelectedItem = BoolToString(_vmEditSettings.Settings.FiltrarClasif1);
-        FiltrarClasif2.SelectedItem = BoolToString(_vmEditSettings.Settings.FiltrarClasif2);
-        FiltrarClasif3.SelectedItem = BoolToString(_vmEditSettings.Settings.FiltrarClasif3);
-        FiltrarClasif4.SelectedItem = BoolToString(_vmEditSettings.Settings.FiltrarClasif4);
-        FiltrarClasif5.SelectedItem = BoolToString(_vmEditSettings.Settings.FiltrarClasif5);
-        FiltrarClasif6.SelectedItem = BoolToString(_vmEditSettings.Settings.FiltrarClasif6);
+        FiltrarClasif1.SelectedItem = BoolToString(_vmEditSettings.TerminalSettings.FiltrarClasif1);
+        FiltrarClasif2.SelectedItem = BoolToString(_vmEditSettings.TerminalSettings.FiltrarClasif2);
+        FiltrarClasif3.SelectedItem = BoolToString(_vmEditSettings.TerminalSettings.FiltrarClasif3);
+        FiltrarClasif4.SelectedItem = BoolToString(_vmEditSettings.TerminalSettings.FiltrarClasif4);
+        FiltrarClasif5.SelectedItem = BoolToString(_vmEditSettings.TerminalSettings.FiltrarClasif5);
+        FiltrarClasif6.SelectedItem = BoolToString(_vmEditSettings.TerminalSettings.FiltrarClasif6);
     }
 
     private string BoolToString(bool x)
@@ -25,39 +26,39 @@ public partial class EditSettingsView : ContentPage
 
     private void CodConcepto_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.CodConcepto = CodConcepto.Text;
+        _vmEditSettings.TerminalSettings.CodigoConcepto = CodConcepto.Text;
     }
 
     private void Serie_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.Serie = Serie.Text;
+        _vmEditSettings.TerminalSettings.Serie = Serie.Text;
     }
 
     private void CodigoCteProv_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.CodigoCteProv = CodigoCteProv.Text;
+        _vmEditSettings.TerminalSettings.CodigoCteProv = CodigoCteProv.Text;
     }
 
     private void CodigoAlmacen_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.CodigoAlmacen = CodigoAlmacen.Text;
+        _vmEditSettings.TerminalSettings.CodigoAlmacen = CodigoAlmacen.Text;
     }
 
     private void Referencia_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.Referencia = Referencia.Text;
+        _vmEditSettings.TerminalSettings.Referencia = Referencia.Text;
     }
 
     private void ServerUri_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.ServerUri = ServerUri.Text;
+        _vmEditSettings.TerminalSettings.ServerUri = ServerUri.Text;
     }
 
     private async void CIDVALORCLASIFICACION1_TextChanged(object sender, TextChangedEventArgs e)
     {
         try
         {
-            _vmEditSettings.Settings.CIDVALORCLASIFICACION1 = int.Parse(CIDVALORCLASIFICACION1.Text);
+            _vmEditSettings.TerminalSettings.CIDVALORCLASIFICACION1 = int.Parse(CIDVALORCLASIFICACION1.Text);
         }
         catch (Exception ex)
         {
@@ -70,7 +71,7 @@ public partial class EditSettingsView : ContentPage
     {
         try
         {
-            _vmEditSettings.Settings.CIDVALORCLASIFICACION2 = int.Parse(CIDVALORCLASIFICACION2.Text);
+            _vmEditSettings.TerminalSettings.CIDVALORCLASIFICACION2 = int.Parse(CIDVALORCLASIFICACION2.Text);
         }
         catch (Exception ex)
         {
@@ -83,7 +84,7 @@ public partial class EditSettingsView : ContentPage
     {
         try
         {
-            _vmEditSettings.Settings.CIDVALORCLASIFICACION3 = int.Parse(CIDVALORCLASIFICACION3.Text);
+            _vmEditSettings.TerminalSettings.CIDVALORCLASIFICACION3 = int.Parse(CIDVALORCLASIFICACION3.Text);
         }
         catch (Exception ex) 
         {
@@ -96,7 +97,7 @@ public partial class EditSettingsView : ContentPage
     {
         try
         {
-            _vmEditSettings.Settings.CIDVALORCLASIFICACION4 = int.Parse(CIDVALORCLASIFICACION4.Text);
+            _vmEditSettings.TerminalSettings.CIDVALORCLASIFICACION4 = int.Parse(CIDVALORCLASIFICACION4.Text);
         }
         catch (Exception ex)
         {
@@ -109,7 +110,7 @@ public partial class EditSettingsView : ContentPage
     {
         try
         {
-            _vmEditSettings.Settings.CIDVALORCLASIFICACION5 = int.Parse(CIDVALORCLASIFICACION5.Text);
+            _vmEditSettings.TerminalSettings.CIDVALORCLASIFICACION5 = int.Parse(CIDVALORCLASIFICACION5.Text);
         }
         catch (Exception ex)
         {
@@ -122,7 +123,7 @@ public partial class EditSettingsView : ContentPage
     {
         try
         {
-            _vmEditSettings.Settings.CIDVALORCLASIFICACION6 = int.Parse(CIDVALORCLASIFICACION6.Text);
+            _vmEditSettings.TerminalSettings.CIDVALORCLASIFICACION6 = int.Parse(CIDVALORCLASIFICACION6.Text);
         }
         catch (Exception ex)
         {
@@ -163,57 +164,57 @@ public partial class EditSettingsView : ContentPage
 
     private void PuertoBascula_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.PuertoBascula = PuertoBascula.Text;
+        _vmEditSettings.BasculaSettings.PuertoBascula = PuertoBascula.Text;
     }
 
     private void BaudRateBascula_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.BaudRateBascula = int.Parse(BaudRateBascula.Text);
+        _vmEditSettings.BasculaSettings.BaudRateBascula = int.Parse(BaudRateBascula.Text);
     }
 
     private void DataBitsBascula_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.DataBitsBascula = int.Parse(DataBitsBascula.Text);
+        _vmEditSettings.BasculaSettings.DataBitsBascula = int.Parse(DataBitsBascula.Text);
     }
 
     private void WriteCommandBascula_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.WriteCommandBascula = WriteCommandBascula.Text;
+        _vmEditSettings.BasculaSettings.WriteCommandBascula = WriteCommandBascula.Text;
     }
 
     private void SufijoBascula_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _vmEditSettings.Settings.SufijoBascula = SufijoBascula.Text;
+        _vmEditSettings.BasculaSettings.SufijoBascula = SufijoBascula.Text;
     }
 
     private void FiltrarClasif1_SelectedIndexChanged(object sender, EventArgs e)
     {
-        _vmEditSettings.Settings.FiltrarClasif1 = StringToBool((string)FiltrarClasif1.SelectedItem);
+        _vmEditSettings.TerminalSettings.FiltrarClasif1 = StringToBool((string)FiltrarClasif1.SelectedItem);
     }
 
     private void FiltrarClasif2_SelectedIndexChanged(object sender, EventArgs e)
     {
-        _vmEditSettings.Settings.FiltrarClasif2 = StringToBool((string)FiltrarClasif2.SelectedItem);
+        _vmEditSettings.TerminalSettings.FiltrarClasif2 = StringToBool((string)FiltrarClasif2.SelectedItem);
     }
 
     private void FiltrarClasif3_SelectedIndexChanged(object sender, EventArgs e)
     {
-        _vmEditSettings.Settings.FiltrarClasif3 = StringToBool((string)FiltrarClasif3.SelectedItem);
+        _vmEditSettings.TerminalSettings.FiltrarClasif3 = StringToBool((string)FiltrarClasif3.SelectedItem);
     }
 
     private void FiltrarClasif4_SelectedIndexChanged(object sender, EventArgs e)
     {
-        _vmEditSettings.Settings.FiltrarClasif4 = StringToBool((string)FiltrarClasif4.SelectedItem);
+        _vmEditSettings.TerminalSettings.FiltrarClasif4 = StringToBool((string)FiltrarClasif4.SelectedItem);
     }
 
     private void FiltrarClasif5_SelectedIndexChanged(object sender, EventArgs e)
     {
-        _vmEditSettings.Settings.FiltrarClasif5 = StringToBool((string)FiltrarClasif5.SelectedItem);
+        _vmEditSettings.TerminalSettings.FiltrarClasif5 = StringToBool((string)FiltrarClasif5.SelectedItem);
     }
 
     private void FiltrarClasif6_SelectedIndexChanged(object sender, EventArgs e)
     {
-        _vmEditSettings.Settings.FiltrarClasif6 = StringToBool((string)FiltrarClasif6.SelectedItem);
+        _vmEditSettings.TerminalSettings.FiltrarClasif6 = StringToBool((string)FiltrarClasif6.SelectedItem);
     }
 
     private bool StringToBool(string x)

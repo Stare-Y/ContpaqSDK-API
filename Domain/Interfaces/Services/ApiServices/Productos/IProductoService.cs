@@ -1,21 +1,30 @@
-﻿namespace Core.Domain.Interfaces.Services.ApiServices.Productos
+﻿using Core.Domain.Entities.DTOs;
+
+namespace Core.Domain.Interfaces.Services.ApiServices.Productos
 {
     public interface IProductoService
     {
         /// <summary>
-        /// Gets the products by their ids
+        /// Obtiene los productos por una lista de ids
         /// </summary>
         /// <param name="ids"></param>
-        /// <returns></returns>
+        /// <returns>COLECCION DE PRODUCTOS</returns>
         /// <exception cref="Exception"></exception>
-        Task<List<T>> GetProductosByIdsSQLAsync<T>(List<int> ids);
+        Task<IEnumerable<ProductoDto>> GetByIdsAsync(IEnumerable<int> ids);
 
         /// <summary>
-        /// Ask for te products by id filterig CPE requirements
+        /// obtiene los productos por una lista de codigos
         /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        Task<List<T>> GetProductosByIdListCPESQLAsync<T>(List<int> ids);
+        /// <param name="codigos"></param>
+        /// <returns>COLECCION DE PRODUCTOS</returns>
+        Task<IEnumerable<ProductoDto>> GetByCodigosAsync(IEnumerable<string> codigos);
+
+
+        /// <summary>
+        /// busca los productos con nombre
+        /// </summary>
+        /// <param name="nombre"></param>
+        /// <returns>COLECCION DE PRODUCTOS</returns>
+        Task<IEnumerable<ProductoDto>> SearchByNombreAsync(string nombre);
     }
 }

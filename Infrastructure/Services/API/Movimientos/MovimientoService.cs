@@ -1,82 +1,49 @@
-﻿using Core.Application.DTOs;
+﻿using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace Infrastructure.Services.API.Movimientos
 {
     public class MovimientoService : IMovimientoService
     {
-        private readonly HttpClient _client;
-        public MovimientoService(HttpClient httpClient)
+        private readonly IApiService _apiService;
+        public MovimientoService(IApiService apiService)
         {
-            _client = httpClient;
+            _apiService = apiService;
         }
-
         
-        public async Task<List<MovimientoDTO>> GetMovimientosByIdDocumentoSQLAsync<MovimientoDTO>(int idDocumento)
+        public async Task<IEnumerable<MovimientoDto>> GetByDcocumentoIdAsync(int idDocumento)
         {
-            try
-            {
-                var response = await _client.GetAsync($"/getMovimientosByIdDocumentoSQL/{idDocumento}");
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(content);
+            var response = await _apiService.GetAsync<ApiResponse>($"Movimientos/ByDocumentoId/{idDocumento}");
 
-                    if (apiResponse.Success)
-                    {
-                        try
-                        {
-                            var movimientos = JsonConvert.DeserializeObject<List<MovimientoDTO>>(apiResponse.Data.ToString());
-                            return movimientos;
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception($"Error al parsear los movimientos, string recibido({apiResponse.Data.ToString()}): " + ex.Message);
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Parece que no tuvimos una respuesta Exitosa para obtener movimientos: " + apiResponse.Message);
-                    }
-                }
-                else
-                {
-                    throw new Exception($"Parece que tuvimos un status code: {response.StatusCode}: " + response.ReasonPhrase);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los movimientos: " + ex.Message);
-            }
+            List<MovimientoDto>? movimientos = response.Data as List<MovimientoDto>;
+
+            if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
+                throw new Exception($"Error al buscar movimientos para el documento {idDocumento}: " + response.ErrorDetails);
+
+            return movimientos ?? throw new Exception("Error al buscar movimientos, la instancia de respuesta fue nula.");
         }
 
-        public async Task<string> UpdateUnidadesMovimiento(int idMovimiento, double unidades)
+        public async Task PutUnidadesMovimientoDto(int idMovimiento, double unidades)
         {
-            try
-            {
-                var response = await _client.PatchAsync($"patchUnidadesMovimientoByIdSQL/{idMovimiento}/{unidades}", new StringContent(JsonConvert.SerializeObject(unidades), Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(content);
 
-                    if (!apiResponse.Success)
-                    {
-                        throw new Exception("Parece que no tuvimos una respuesta Exitosa para actualizar las unidades del movimiento: " + apiResponse.Message);
-                    }
-                    return apiResponse.Message;
-                }
-                else
-                {
-                    throw new Exception($"Parece que tuvimos un status code: {response.StatusCode}: " + response.ReasonPhrase);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al actualizar las unidades del movimiento: " + ex.Message);
-            }
+            var response = await _apiService.PutAsync<ApiResponse>($"patchUnidadesMovimientoByIdSQL/{idMovimiento}/{unidades}", null);
+
+            if (!response.Success)
+                throw new Exception($"Error al actualizar las unidades del movimiento {idMovimiento}: " + response.ErrorDetails);
+
+            return;
         }
+
+        public async Task PatchRangeAsync(IEnumerable<MovimientoDto> movimientos)
+        {
+            var response = await _apiService.PostAsync<ApiResponse>("Movimientos", movimientos);
+
+            if (!response.Success)
+                throw new Exception($"Error al actualizar los movimientos: " + response.ErrorDetails);
+
+            return;
+        }
+
     }
 }

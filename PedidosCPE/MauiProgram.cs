@@ -1,12 +1,12 @@
-﻿using ApplicationLayer.ViewModels;
-using CommunityToolkit.Maui;
-using Domain.Interfaces.Services.ApiServices.ClientesProveedores;
-using Domain.Interfaces.Services.ApiServices.Documentos;
-using Domain.Interfaces.Services.ApiServices.Movimientos;
-using Domain.Interfaces.Services.ApiServices.Productos;
-using Domain.SDK_Comercial;
-using Infrastructure.Services.API.ClientesProveedores;
-using Infrastructure.Services.API.Documentos;
+﻿using CommunityToolkit.Maui;
+using Core.Application.ViewModels;
+using Core.Domain.Entities;
+using Core.Domain.Interfaces.Services.ApiServices;
+using Core.Domain.Interfaces.Services.ApiServices.ClienteProveedor;
+using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
+using Core.Domain.Interfaces.Services.ApiServices.Productos;
+using Infrastructure.Services.API;
+using Infrastructure.Services.API.CLienteProveedor;
 using Infrastructure.Services.API.Movimientos;
 using Infrastructure.Services.API.Productos;
 using Microsoft.Extensions.Logging;
@@ -42,40 +42,25 @@ namespace PedidosCPE
 
         private static void ConfigureServices(MauiAppBuilder builder)
         {
-            var sDKSettings = LoadSettings();
+            TerminalSettings terminalSettings = LoadTerminalSettings();
+            BasculaSettings basculaSettings = LoadBasculaSettings();
 
-            builder.Services.AddSingleton<SDKSettings>(provider => sDKSettings);
+            builder.Services.AddSingleton<TerminalSettings>(provider => terminalSettings);
 
             builder.Services.AddHttpClient("CommonHttpClient", client =>
             {
-                client.BaseAddress = new Uri(sDKSettings.ServerUri);
+                client.BaseAddress = new Uri(terminalSettings.ServerUri);
                 client.Timeout = TimeSpan.FromSeconds(20);
             });
 
             // Registrar los servicios e inyectar el HttpClient común
-            builder.Services.AddTransient<IDocumentoService, DocumentoService>(sp =>
-            {
-                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-                return new DocumentoService(httpClientFactory.CreateClient("CommonHttpClient"));
-            });
+            builder.Services.AddTransient<IApiService, ApiService>();
 
-            builder.Services.AddTransient<IProductoService, ProductoService>(sp =>
-            {
-                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-                return new ProductoService(httpClientFactory.CreateClient("CommonHttpClient"));
-            });
+            builder.Services.AddTransient<IProductoService, ProductoService>();
 
-            builder.Services.AddTransient<IClienteProveedorService, ClienteProveedorService>(sp =>
-            {
-                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-                return new ClienteProveedorService(httpClientFactory.CreateClient("CommonHttpClient"));
-            });
+            builder.Services.AddTransient<IClienteProveedorService, ClienteProveedorService>();
 
-            builder.Services.AddTransient<IMovimientoService, MovimientoService>(sp =>
-            {
-                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-                return new MovimientoService(httpClientFactory.CreateClient("CommonHttpClient"));
-            });
+            builder.Services.AddTransient<IMovimientoService, MovimientoService>();
 
             builder.Services.AddTransient<VMSearchProductos>();
             builder.Services.AddTransient<VMCreateDocumento>();
@@ -85,11 +70,11 @@ namespace PedidosCPE
             builder.Services.AddTransient<VMUnidadesPopup>();
         }
 
-        private static SDKSettings LoadSettings()
+        private static TerminalSettings LoadTerminalSettings()
         {
             try
             {
-                var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data/SDKSettings.json");
+                var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data/TerminalSettings.json");
                 if (!File.Exists(jsonPath))
                 {
                     throw new Exception($"SDKSettings.json not found on path: {jsonPath}");
@@ -102,7 +87,32 @@ namespace PedidosCPE
                 }
                 else
                 {
-                    return JsonSerializer.Deserialize<SDKSettings>(json) ?? throw new Exception("Json SDKSettings invalido");
+                    return JsonSerializer.Deserialize<TerminalSettings>(json) ?? throw new Exception("Json SDKSettings invalido");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private static BasculaSettings LoadBasculaSettings()
+        {
+            try
+            {
+                var jsonPath = Path.Combine(AppContext.BaseDirectory, "Data/BasculaSettings.json");
+                if (!File.Exists(jsonPath))
+                {
+                    throw new Exception($"BasculaSettings.json not found on path: {jsonPath}");
+                }
+                string json = File.ReadAllText(jsonPath);
+                if (string.IsNullOrEmpty(json))
+                {
+                    throw new Exception("BasculaSettings.json is empty");
+                }
+                else
+                {
+                    return JsonSerializer.Deserialize<BasculaSettings>(json) ?? throw new Exception("Json BasculaSettings invalido");
                 }
             }
             catch (Exception)

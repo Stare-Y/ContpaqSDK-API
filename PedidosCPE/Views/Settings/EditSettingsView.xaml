@@ -3,7 +3,7 @@
     x:Class="PedidosCPE.Views.Settings.EditSettingsView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vm="clr-namespace:ApplicationLayer.ViewModels;assembly=ApplicationLayer"
+    xmlns:vm="clr-namespace:Core.Application.ViewModels;assembly=Core.Application"
     Title="Editar Ajustes">
 
     <ContentPage.BindingContext>

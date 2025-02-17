@@ -1,35 +1,38 @@
-﻿using Core.Domain.Interfaces.Repositories.SQL;
+﻿using Core.Domain.Entities.DTOs;
 
 namespace Core.Domain.Interfaces.Services.ApiServices.Documentos
 {
     public interface IDocumentoService
     {
         /// <summary>
-        /// Get a document by its concepto, serie and folio
-        /// </summary>
-        /// <param name="concepto"></param>
-        /// <param name="serie"></param>
-        /// <param name="folio"></param>
-        /// <returns>DocumentDTO, parsed from the data from the apiresponse</returns>
-        /// <exception cref="Exception"></exception>
-        Task<T> GetByConceptoSerieAndFolioSDKAsync<T>(string codConcepto, string serie, string folio);
-
-        /// <summary>
-        /// Get a document by its id, asking the SDK
-        /// </summary>
-        /// <param name="idDocumento"></param>
-        /// <returns>DocumentDTO parsed form the ApiResponse Data atrbute</returns>
-        /// <exception cref="Exception"></exception>
-        Task<T> GetDocumentByIdSDKAsync<T>(int idDocumento);
-
-        /// <summary>
-        /// Get a document by its id, filtering date, filtering by CPE requirements
+        /// Obtiene la COLECCION de documentos pendientes
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="fechaInicio"></param>
-        /// <param name="fechaFin"></param>
-        /// <param name="serie"></param>
-        /// <returns>List of documents</returns>
-        Task<List<T>> GetPedidosByFechaSerieCPESQL<T>(DateTime fechaInicio, DateTime fechaFin, string serie);
+        /// <returns>Lista de documentos pendientes xd</returns>
+        Task<IEnumerable<DocumentoDto>> GetPendientes();
+
+        /// <summary>
+        /// Envia un documento pendiente con sus movimientos, si no, enviar la coleccion de movimientos vacia
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="request"></param>
+        /// <returns>El documento creado con su id y tal</returns>
+        Task<DocumentoDto> PostPendientes(DocumentoDto documento, IEnumerable<MovimientoDto> movimientoDtos);
+
+        /// <summary>
+        /// Envia un documento con sus movimientos a la API de SDK, para que aparezca completado
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="document"></param>
+        /// <param name="movements"></param>
+        /// <returns>Diccionario con id de sql y folio</returns>
+        Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements);
+
+        /// <summary>
+        /// Actualiza un documento en la base de datos
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <returns></returns>
+        Task PutAsync(DocumentoDto documento);
     }
 }

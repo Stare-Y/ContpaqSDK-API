@@ -1,7 +1,6 @@
-using ApplicationLayer.DTOs;
-using ApplicationLayer.ViewModels;
 using CommunityToolkit.Maui.Views;
-using Domain.Entities.Interface;
+using Core.Application.ViewModels;
+using Core.Domain.Entities.DTOs;
 
 namespace PedidosCPE.Views.Movimientos;
 
@@ -16,7 +15,7 @@ public partial class CaptureUnidadesView : ContentPage
         BindingContext = _viewModel;
     }
 
-    public CaptureUnidadesView(ProductoDTO producto, Movimiento movimiento) : this(MauiProgram.ServiceProvider.GetRequiredService<VMCaptureUnidades>())
+    public CaptureUnidadesView(ProductoDto producto, MovimientoDto movimiento) : this(MauiProgram.ServiceProvider.GetRequiredService<VMCaptureUnidades>())
     {
         _viewModel.Producto = producto;
         _viewModel.Movimiento = movimiento;

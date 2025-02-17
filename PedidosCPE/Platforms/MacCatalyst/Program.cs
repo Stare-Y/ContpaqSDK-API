@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace PedidosCPE
+namespace PedidosCPE.Platforms.MacCatalyst
 {
     public class Program
     {

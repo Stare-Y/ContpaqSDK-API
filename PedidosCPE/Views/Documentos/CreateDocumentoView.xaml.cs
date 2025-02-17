@@ -1,11 +1,10 @@
-using ApplicationLayer.ViewModels;
-using ApplicationLayer.ViewModels.BindableObjects;
 using CommunityToolkit.Maui.Views;
 using PedidosCPE.Views.ClientesProveedores;
 using PedidosCPE.Views.Events;
 using PedidosCPE.Views.Popups;
 using PedidosCPE.Views.Productos;
-using System.Collections.Specialized;
+using Core.Application.ViewModels;
+using Core.Application.ViewModels.ObservableEntity;
 
 namespace PedidosCPE.Views.Documentos;
 

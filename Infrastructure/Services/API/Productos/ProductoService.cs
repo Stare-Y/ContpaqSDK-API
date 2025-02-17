@@ -1,4 +1,5 @@
-﻿using Core.Application.DTOs;
+﻿using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.Productos;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -8,73 +9,33 @@ namespace Infrastructure.Services.API.Productos
 {
     public class ProductoService : IProductoService
     {
-        private readonly HttpClient _client;
+        private readonly IApiService _apiService;
 
-        public ProductoService(HttpClient client)
+        public ProductoService(ApiService apiService)
         {
-            _client = client;
+            _apiService = apiService;
         }
 
-        public async Task<List<ProductoDTO>> GetProductosByIdsSQLAsync<ProductoDTO>(List<int> ids)
+        public async Task<IEnumerable<ProductoDto>> SearchByNombreAsync(string nombre)
         {
-            try
-            {
-                var response = await _client.PostAsync("/getProductosByIdsSQL", new StringContent(JsonConvert.SerializeObject(ids), Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(content);
+            var response = await _apiService.GetAsync<ApiResponse>($"Productos/ByNombre/{nombre}");
 
-                    if (apiResponse.Success)
-                    {
-                        var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(apiResponse.Data.ToString());
-                        return productos;
-                    }
-                    else
-                    {
-                        throw new Exception("Parece que no tuvimos una respuesta Exitosa :c: " + apiResponse.Message);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Parece que no tuvimos una respuesta Exitosa :c: " + response.ReasonPhrase);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los productos: " + ex.Message);
-            }
+            List<ProductoDto>? productos = response.Data as List<ProductoDto>;
+
+            if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
+                throw new Exception($"Error al buscar productos por nombre {nombre}: " + response.ErrorDetails);
+
+            return productos ?? throw new Exception("Error al buscar productos por nombre, la instancia de respuesta fue nula.");
         }
 
-        public async Task<List<ProductoDTO>> GetProductosByIdListCPESQLAsync<ProductoDTO>(List<int> ids)
+        public Task<IEnumerable<ProductoDto>> GetByIdsAsync(IEnumerable<int> ids)
         {
-            try
-            {
-                var response = await _client.PostAsync("/getProductosByIdsCPESQL/", new StringContent(JsonConvert.SerializeObject(ids), Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(content);
+            throw new NotImplementedException();
+        }
 
-                    if (apiResponse.Success)
-                    {
-                        var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(apiResponse.Data.ToString());
-                        return productos;
-                    }
-                    else
-                    {
-                        throw new Exception("Parece que no tuvimos una respuesta Exitosa en la obtencion de productos :c: " + apiResponse.Message);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Parece que response dice que no tuvimos success status code al pedir productos:" + response.ReasonPhrase);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los productos: " + ex.Message);
-            }
+        public Task<IEnumerable<ProductoDto>> GetByCodigosAsync(IEnumerable<string> codigos)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,6 +1,6 @@
-using ApplicationLayer.ViewModels;
-using ApplicationLayer.ViewModels.BindableObjects;
 using CommunityToolkit.Maui.Views;
+using Core.Application.ViewModels;
+using Core.Application.ViewModels.ObservableEntity;
 using PedidosCPE.Views.Events;
 
 namespace PedidosCPE.Views.Popups;

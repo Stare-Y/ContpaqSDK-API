@@ -1,5 +1,4 @@
-﻿using Core.Application.DTOs;
-using Core.Application.UseCases.Postgres;
+﻿using Core.Application.UseCases.Postgres;
 using Core.Application.UseCases.Postgres.Requests;
 using Core.Application.UseCases.SDK;
 using Core.Application.UseCases.SDK.Requests;

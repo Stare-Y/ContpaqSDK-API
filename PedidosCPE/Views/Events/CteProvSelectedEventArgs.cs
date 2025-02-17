@@ -1,9 +1,9 @@
-﻿using ApplicationLayer.DTOs;
+﻿using Core.Domain.Entities.DTOs;
 
 namespace PedidosCPE.Views.Events
 {
     public class CteProvSelectedEventArgs : EventArgs
     {
-        public ClienteProveedorDTO? ClienteProveedorSeleccionado { get; set; } = new ();
+        public ClienteProveedorDto? ClienteProveedorSeleccionado { get; set; } = new ();
     }
 }

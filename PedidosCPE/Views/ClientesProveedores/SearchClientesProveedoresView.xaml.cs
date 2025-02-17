@@ -1,6 +1,6 @@
-using ApplicationLayer.DTOs;
-using ApplicationLayer.ViewModels;
 using CommunityToolkit.Maui.Views;
+using Core.Application.ViewModels;
+using Core.Domain.Entities.DTOs;
 using PedidosCPE.Views.Events;
 
 namespace PedidosCPE.Views.ClientesProveedores;
@@ -90,7 +90,7 @@ public partial class SearchClientesProveedoresView : ContentPage
             {
                 return;
             }
-            ClienteProveedorDTO clienteProveedor = (ClienteProveedorDTO)resultList.SelectedItem ?? throw new Exception("No se seleccionó ningún cliente/proveedor");
+            ClienteProveedorDto clienteProveedor = (ClienteProveedorDto)resultList.SelectedItem ?? throw new Exception("No se seleccionó ningún cliente/proveedor");
             if (clienteProveedor != null)
             {
                 _viewModel.ClienteProveedorSeleccionado = clienteProveedor;

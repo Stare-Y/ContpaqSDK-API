@@ -1,5 +1,5 @@
-﻿using Core.Application.DTOs;
-using Core.Application.UseCases.SQL.Productos;
+﻿using Core.Application.UseCases.SQL.Productos;
+using Core.Domain.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pedidos_CPE.Controllers

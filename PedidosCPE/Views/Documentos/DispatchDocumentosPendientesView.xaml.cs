@@ -1,7 +1,7 @@
-using ApplicationLayer.ViewModels;
-using ApplicationLayer.ViewModels.BindableObjects;
 using CommunityToolkit.Maui.Views;
-using Domain.Entities.Interface;
+using Core.Application.ViewModels;
+using Core.Application.ViewModels.ObservableEntity;
+using Core.Domain.Entities.DTOs;
 using PedidosCPE.Views.Movimientos;
 
 namespace PedidosCPE.Views.Documentos;
@@ -112,7 +112,7 @@ public partial class DispatchDocumentosPendientesView : ContentPage
         this.ShowPopup(popup);
         try
         {
-            _viewModel.DocumentoSeleccionado = (Documento)documentosList.SelectedItem;
+            _viewModel.DocumentoSeleccionado = (DocumentoDto)documentosList.SelectedItem;
             await _viewModel.FetchMovimientosAndProductos();
             BtnCompletarDocumento.IsVisible = true;
         }

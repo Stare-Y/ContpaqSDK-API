@@ -1,8 +1,6 @@
-﻿using Core.Application.DTOs;
-using Core.Application.UseCases.Postgres.Movimientos;
+﻿using Core.Application.UseCases.Postgres.Movimientos;
 using Core.Domain.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Pedidos_CPE.Controllers
 {
@@ -20,7 +18,7 @@ namespace Pedidos_CPE.Controllers
 
         [HttpPatch]
         [Route("Movimientos")]
-        public async Task<ActionResult<ApiResponse>> PatchMovimientosUnidades(List<MovimientoDto> movimientos)
+        public async Task<ActionResult<ApiResponse>> PatchMovimientosUnidades([FromBody]List<MovimientoDto> movimientos)
         {
             try
             {
@@ -34,7 +32,7 @@ namespace Pedidos_CPE.Controllers
         }
 
         [HttpGet]
-        [Route("Movimientos/ByDocumentoId")]
+        [Route("Movimientos/ByDocumentoId/")]
         public async Task<ActionResult<ApiResponse>> GetMovimientosByDocumentoId(int documentoId)
         {
             try

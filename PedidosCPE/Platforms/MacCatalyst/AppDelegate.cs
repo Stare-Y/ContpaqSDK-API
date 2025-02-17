@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace PedidosCPE
+namespace PedidosCPE.Platforms.MacCatalyst
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

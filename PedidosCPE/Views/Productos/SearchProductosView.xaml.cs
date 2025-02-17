@@ -1,6 +1,6 @@
-using ApplicationLayer.DTOs;
-using ApplicationLayer.ViewModels;
 using CommunityToolkit.Maui.Views;
+using Core.Application.ViewModels;
+using Core.Domain.Entities.DTOs;
 using PedidosCPE.Views.Events;
 
 namespace PedidosCPE.Views.Productos;
@@ -64,7 +64,7 @@ public partial class SearchProductosView : ContentPage
             {
                 return;
             }
-            ProductoDTO producto = (ProductoDTO)resultList.SelectedItem ?? throw new Exception("No se seleccionó ningún producto");
+            ProductoDto producto = (ProductoDto)resultList.SelectedItem ?? throw new Exception("No se seleccionó ningún producto");
             if (producto != null)
             {
                 _viewModel.ProductosSeleccionados.Add(producto);
@@ -93,7 +93,7 @@ public partial class SearchProductosView : ContentPage
     {
         if (selectedList.SelectedItem != null)
         {
-            ProductoDTO producto = (ProductoDTO)selectedList.SelectedItem;
+            ProductoDto producto = (ProductoDto)selectedList.SelectedItem;
             _viewModel.EliminarProductoSeleccionado(producto);
             BtnEliminarSeleccionado.IsEnabled = false;
         }

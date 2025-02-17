@@ -1,4 +1,4 @@
-﻿namespace Core.Application.DTOs
+﻿namespace Core.Domain.Entities.DTOs
 {
     public class ApiResponse
     {

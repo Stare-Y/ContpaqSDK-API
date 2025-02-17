@@ -35,7 +35,7 @@ namespace Infrastructure.Services.API
 
             return result == null ? throw new Exception("Hubo un error, la respuesta del servidor resulto nula") : result;
         }
-        public async Task<T> PutAsync<T>(string endpoint, object data)
+        public async Task<T> PutAsync<T>(string endpoint, object? data)
         {
             var json = JsonConvert.SerializeObject(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

@@ -1,9 +1,4 @@
-﻿using Core.Application.DTOs;
-using Core.Domain.Interfaces.Repositories.DTOs;
-using Core.Domain.Interfaces.Repositories.SQL;
-using Core.Domain.Interfaces.Services.ApiServices;
-using Core.Domain.Interfaces.Services.ApiServices.Documentos;
-using Newtonsoft.Json;
+﻿using Core.Domain.Interfaces.Services.ApiServices;
 
 namespace Infrastructure.Services.API.Documentos
 {
