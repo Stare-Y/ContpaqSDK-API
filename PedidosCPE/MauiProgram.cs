@@ -48,8 +48,8 @@ namespace PedidosCPE
             TerminalSettings terminalSettings = LoadTerminalSettings();
             BasculaSettings basculaSettings = LoadBasculaSettings();
 
-            builder.Services.AddSingleton<TerminalSettings>(provider => terminalSettings);
-            builder.Services.AddSingleton<BasculaSettings>(provider => basculaSettings);
+            builder.Services.AddSingleton(LoadTerminalSettings());
+            builder.Services.AddSingleton(LoadBasculaSettings());
 
             builder.Services.AddHttpClient<IApiService, ApiService>("CommonHttpClient", client =>
             {
