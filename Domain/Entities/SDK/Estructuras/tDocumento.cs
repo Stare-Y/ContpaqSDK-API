@@ -20,6 +20,9 @@ namespace Core.Domain.Entities.SDK.Estructuras
         public string aCodConcepto;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Constantes.kLongSerie)]
         public string aSerie;
+        /// <summary>
+        /// REQUIRED Format: "MM/dd/yyyy"
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Constantes.kLongFecha)]
         public string aFecha;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Constantes.kLongCodigo)]

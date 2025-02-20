@@ -109,7 +109,7 @@ namespace Core.Application.ViewModels
             }
         }
 
-        public async Task SaveDocumentAndMovementsOnSDK()
+        public async Task SaveDocumentAndMovementsOnSDK(string empresa)
         {
             //validate if all movements have units
             if (_movimientos.Any(m => m.Surtidas == 0))
@@ -120,7 +120,7 @@ namespace Core.Application.ViewModels
 
             try
             {
-                var resultDTO = await _documentoService.PostDocumentoSDK(_documentoSeleccionado, Movimientos);
+                var resultDTO = await _documentoService.PostDocumentoSDK(_documentoSeleccionado, Movimientos, empresa);
                 DocumentoSeleccionado.IdContpaqiSQL = resultDTO.Keys.First();
                 DocumentoSeleccionado.Folio = resultDTO.Values.First();
             }

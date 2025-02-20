@@ -11,11 +11,9 @@ namespace Infrastructure.Services.API.Documentos
     public class DocumentoService : IDocumentoService
     {
         private readonly IApiService _apiService;
-        private readonly TerminalSettings _terminalSettings;
-        public DocumentoService(IApiService apiService, TerminalSettings terminalSettings)
+        public DocumentoService(IApiService apiService)
         {
             _apiService = apiService;
-            _terminalSettings = terminalSettings;
         }
 
         public async Task<IEnumerable<DocumentoDto>> GetPendientes()
@@ -52,13 +50,13 @@ namespace Infrastructure.Services.API.Documentos
             return documentoCreado ?? throw new Exception("Error al crear documento pendiente, la instancia de respuesta fue nula.");
         }
 
-        public async Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements)
+        public async Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements, string empresa)
         {
             var request = new AddDocumentoYMovimientosSDKRequest
             {
                 DocumentoDto = document,
                 MovimientoDtos = [.. movements],
-                Empresa = _terminalSettings.Empresa
+                Empresa = empresa
             };
 
             var response = await _apiService.PostAsync<ApiResponse>("SDK/addDocumentoYMovimientos", request);

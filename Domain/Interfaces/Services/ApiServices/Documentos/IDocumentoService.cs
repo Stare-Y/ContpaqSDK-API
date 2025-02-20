@@ -26,7 +26,7 @@ namespace Core.Domain.Interfaces.Services.ApiServices.Documentos
         /// <param name="document"></param>
         /// <param name="movements"></param>
         /// <returns>Diccionario con id de sql y folio</returns>
-        Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements);
+        Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements, string empresa);
 
         /// <summary>
         /// Actualiza un documento en la base de datos

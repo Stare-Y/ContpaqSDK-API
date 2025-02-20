@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Views;
 using Core.Application.ViewModels;
 using Core.Application.ViewModels.ObservableEntity;
+using Core.Domain.Entities;
 using Core.Domain.Entities.DTOs;
 using PedidosCPE.Views.Movimientos;
 
@@ -147,7 +148,8 @@ public partial class DispatchDocumentosPendientesView : ContentPage
             {
                 return;
             }
-            await _viewModel.SaveDocumentAndMovementsOnSDK();
+            var empresa = MauiProgram.ServiceProvider.GetRequiredService<TerminalSettings>().Empresa;
+            await _viewModel.SaveDocumentAndMovementsOnSDK(empresa);
             BtnCompletarDocumento.IsVisible = false;
             //todo: then print a ticket
             await DisplayAlert("Éxito", "Documento enviado exitosamente :)", "Ok");

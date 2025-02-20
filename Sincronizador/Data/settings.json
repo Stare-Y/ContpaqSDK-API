@@ -1,0 +1,6 @@
+{
+  "FiscalConnectionString": "Server=localhost,1919;Database=adCooperativa_2024;User Id=sa;Password=$Index123459.;TrustServerCertificate=True;",
+  "NoFiscalConnectionString": "Server=localhost,1919;Database=adCooperativa_2024;User Id=sa;Password=$Index123459.;TrustServerCertificate=True;",
+  "SerieDefault": "CF",
+  "ServerUri": "http://localhost:6969/"
+}
