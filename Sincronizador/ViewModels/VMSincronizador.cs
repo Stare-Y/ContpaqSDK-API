@@ -12,8 +12,8 @@ namespace Sincronizador.ViewModels
     public class VMSincronizador : ViewModelBase
     {
         private readonly IDocumentoService _documentoService;
-        private readonly ContpaqiSQLContext _fiscalSQLContext;
-        private readonly ContpaqiSQLContext _noFisalSQLContext;
+        private readonly DbContextOptions<ContpaqiSQLContext> _fiscalOptions;
+        private readonly DbContextOptions<ContpaqiSQLContext> _noFiscalOptions;
 
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
@@ -31,20 +31,47 @@ namespace Sincronizador.ViewModels
             DbContextOptions<ContpaqiSQLContext> optionsNoFiscal, string serie, 
             IDocumentoService documentoService)
         {
-            _fiscalSQLContext = new ContpaqiSQLContext(optionsFiscal);
-            _noFisalSQLContext = new ContpaqiSQLContext(optionsNoFiscal);
+            _fiscalOptions = optionsFiscal;
+            _noFiscalOptions = optionsNoFiscal;
             Serie = serie;
             _documentoService = documentoService;
         }
+
         public async Task GetDocumentosFiltrados()
         {
+            if(FechaFin < FechaInicio)
+            {
+                throw new Exception("La fecha de inicio no puede ser mayor a la fecha de fin");
+            }
+
+            if(FechaFin == default || FechaInicio == default)
+            {
+                throw new Exception("Las fechas no pueden ser nulas");
+            }
+
             FaltantesEnFiscal.Clear();
 
-            DocumentosNoFiscal = new (await _noFisalSQLContext.documents.Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && Serie == d.CSERIEDOCUMENTO).ToListAsync());
+            // Obtener documentos No Fiscal
+            using (var noFiscalSQLContext = new ContpaqiSQLContext(_noFiscalOptions))
+            {
+                DocumentosNoFiscal = new ObservableCollection<DocumentoSQL>(
+                    await noFiscalSQLContext.documents
+                        .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && Serie == d.CSERIEDOCUMENTO)
+                        .ToListAsync()
+                );
+            }
 
-            DocumentosFiscal = new (await _fiscalSQLContext.documents.Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && Serie == d.CSERIEDOCUMENTO).ToListAsync());
+            // Obtener documentos Fiscal
+            using (var fiscalSQLContext = new ContpaqiSQLContext(_fiscalOptions))
+            {
+                DocumentosFiscal = new ObservableCollection<DocumentoSQL>(
+                    await fiscalSQLContext.documents
+                        .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && Serie == d.CSERIEDOCUMENTO)
+                        .ToListAsync()
+                );
+            }
 
-            //Separando faltantes en fiscal
+            // Separando faltantes en fiscal
             foreach (var documento in DocumentosNoFiscal)
             {
                 if (!DocumentosFiscal.Any(d => d.CFOLIO == documento.CFOLIO && d.CSERIEDOCUMENTO == documento.CSERIEDOCUMENTO))

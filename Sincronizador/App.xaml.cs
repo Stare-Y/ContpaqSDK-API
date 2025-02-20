@@ -28,9 +28,7 @@ public partial class App : Application
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
         
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-
-        mainWindow.Show();
+        
     }
 
     private void ConfigureServices(ServiceCollection services)
@@ -41,12 +39,13 @@ public partial class App : Application
 
         services.AddHttpClient<IApiService, ApiService>("CommonHttpClient", client =>
         {
-            client.BaseAddress = new Uri(settings.ServerUri);
+            client.BaseAddress = new Uri(settings.ServerUri ?? throw new InvalidDataException("ServerUri de settings.json es nulo"));
             client.Timeout = TimeSpan.FromSeconds(20);
         });
         services.AddSingleton<IApiService, ApiService>();
 
         services.AddSingleton<IDocumentoService, DocumentoService>();
+
         services.AddSingleton<VMSincronizador>(provider =>
         {
             DbContextOptionsBuilder<ContpaqiSQLContext> optionsFiscal = new();
@@ -58,7 +57,7 @@ public partial class App : Application
                     errorNumbersToAdd: null));
 
             DbContextOptionsBuilder<ContpaqiSQLContext> optionsNoFiscal = new();
-            optionsFiscal.UseSqlServer(
+            optionsNoFiscal.UseSqlServer(
                 settings.NoFiscalConnectionString,
                 sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
@@ -97,6 +96,13 @@ public partial class App : Application
 
             return settings;
         }
+    }
+
+    private void OnStartup(object sender, StartupEventArgs e)
+    {
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+
+        mainWindow.Show();
     }
 }
 
