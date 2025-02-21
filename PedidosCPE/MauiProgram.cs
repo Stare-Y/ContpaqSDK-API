@@ -6,11 +6,13 @@ using Core.Domain.Interfaces.Services.ApiServices.ClienteProveedor;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using Core.Domain.Interfaces.Services.ApiServices.Productos;
+using Core.Domain.Interfaces.Services.ApiServices.SDK;
 using Infrastructure.Services.API;
 using Infrastructure.Services.API.CLienteProveedor;
 using Infrastructure.Services.API.Documentos;
 using Infrastructure.Services.API.Movimientos;
 using Infrastructure.Services.API.Productos;
+using Infrastructure.Services.API.SDK;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -63,6 +65,7 @@ namespace PedidosCPE
             builder.Services.AddTransient<IMovimientoService, MovimientoService>();
 
             builder.Services.AddTransient<IDocumentoService, DocumentoService>();
+            builder.Services.AddTransient<ISDKService, SDKService>();
 
             builder.Services.AddTransient<VMSearchProductos>();
             builder.Services.AddTransient<VMCreateDocumento>();

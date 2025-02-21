@@ -19,7 +19,6 @@ namespace Core.Domain.Interfaces.Services.ApiServices.Productos
         /// <returns>COLECCION DE PRODUCTOS</returns>
         Task<IEnumerable<ProductoDto>> GetByCodigosAsync(IEnumerable<string> codigos);
 
-
         /// <summary>
         /// busca los productos con nombre
         /// </summary>

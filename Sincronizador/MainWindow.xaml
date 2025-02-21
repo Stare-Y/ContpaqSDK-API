@@ -3,21 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Sincronizador"
+        xmlns:local="clr-namespace:Sincronizador" xmlns:viewmodels="clr-namespace:Sincronizador.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:VMSincronizador}"
         mc:Ignorable="d"
         Title="Sincronizador de Compras" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
             <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        
-        
+
+        <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="1" >
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Fecha de inicio:"/>
+                <DatePicker Name="DateFechaInicio" SelectedDate="{Binding FechaInicio}"/> <!-- On conde behind, date is limited to yesterday-->
+                <Label Content="Fecha fin:" />
+                <DatePicker Name="DateFechaFin" SelectedDate="{Binding FechaFin}"/>
+                <Label Content="Codigo del concepto a buscar:" />
+                <TextBox Name="TxtSerie" Width="100" Text="{Binding Serie}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

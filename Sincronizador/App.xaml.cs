@@ -69,7 +69,7 @@ public partial class App : Application
             return new VMSincronizador(
                 optionsFiscal.Options,
                 optionsNoFiscal.Options,
-                settings.SerieDefault ?? throw new Exception("SerieDefault de settings nula"),
+                settings.ConceptoDefault ?? throw new Exception("SerieDefault de settings nula"),
                 documentoService);
         });
     }
@@ -91,7 +91,7 @@ public partial class App : Application
         {
             var settings = JsonSerializer.Deserialize<SincronizadorSettings>(json) ?? throw new Exception("Json settings invalido");
 
-            if (settings.FiscalConnectionString == null || settings.NoFiscalConnectionString == null || settings.SerieDefault == null)
+            if (settings.FiscalConnectionString == null || settings.NoFiscalConnectionString == null || settings.ConceptoDefault == null)
                 throw new FileLoadException("settings.json es invalido, faltan atributos");
 
             return settings;

@@ -1,5 +1,5 @@
 ﻿using Core.Domain.Exceptions;
-using Core.Domain.Interfaces.Repositories.SQL;
+using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
 
 namespace Core.Application.UseCases.SDK
