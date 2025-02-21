@@ -17,4 +17,9 @@ public partial class MainWindow : Window
         DateFechaInicio.DisplayDateEnd = DateTime.Today.AddDays(-1);
         DateFechaFin.DisplayDateEnd = DateTime.Today;
     }
+
+    private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
+    {
+        await _viewModel.GetDocumentosFiltrados();
+    }
 }

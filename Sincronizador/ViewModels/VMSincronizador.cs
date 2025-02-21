@@ -57,23 +57,31 @@ namespace Sincronizador.ViewModels
             using (var noFiscalSQLContext = new ContpaqiSQLContext(_noFiscalOptions))
             {
                 concepto = noFiscalSQLContext.conceptos.FirstOrDefault(c => c.CCODIGOCONCEPTO == Concepto) ??
-                    throw new KeyNotFoundException("Error, el concepto proporcionado no se encontro en la base de datos.") ;
+        throw new KeyNotFoundException("Error, el concepto proporcionado no se encontro en la base de datos.");
 
-                PrimaryDocumentos = new ObservableCollection<DocumentoSQL>(
-                    await noFiscalSQLContext.documents
-                        .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
-                        .ToListAsync()
-                );
+                var documentos = await noFiscalSQLContext.documents
+                    .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
+                    .ToListAsync();
+
+                PrimaryDocumentos.Clear();
+                foreach (var doc in documentos)
+                {
+                    PrimaryDocumentos.Add(doc);
+                }
             }
 
             // Obtener documentos Fiscal
             using (var fiscalSQLContext = new ContpaqiSQLContext(_fiscalOptions))
             {
-                SecondaryDocumentos = new ObservableCollection<DocumentoSQL>(
-                    await fiscalSQLContext.documents
-                        .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
-                        .ToListAsync()
-                );
+                var documentos = await fiscalSQLContext.documents
+                    .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
+                    .ToListAsync();
+
+                SecondaryDocumentos.Clear();
+                foreach (var doc in documentos)
+                {
+                    SecondaryDocumentos.Add(doc);
+                }
             }
 
             // Separando faltantes en fiscal

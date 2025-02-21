@@ -23,12 +23,13 @@
                 <Label Content="Fecha fin:" />
                 <DatePicker Name="DateFechaFin" SelectedDate="{Binding FechaFin}"/>
                 <Label Content="Codigo del concepto a buscar:" />
-                <TextBlock Name="TxtSerie" Width="100" Text="{Binding Concepto}"/>
+                <TextBox Name="TxtSerie" Width="100" Text="{Binding Concepto}"/>
+                <Button Name="BtnBuscar" Click="BtnBuscar_Click" Content="Buscar"/>
             </StackPanel>
         </Border>
         <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" >
             <StackPanel Orientation="Horizontal">
-                <ListView Name="PrimaryDocuments" DataContext="{Binding PrimaryDocumentos}">
+                <ListView Name="PrimaryDocuments" ItemsSource="{Binding PrimaryDocumentos}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
@@ -38,7 +39,7 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <ListView Name="SecondaryDocuments" DataContext="{Binding SecondaryDocumentos}">
+                <ListView Name="SecondaryDocuments" ItemsSource="{Binding SecondaryDocumentos}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
@@ -48,7 +49,7 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <ListView Name="FaltantesEnSecondary" DataContext="{Binding FaltantesEnSecondary}">
+                <ListView Name="FaltantesEnSecondary" ItemsSource="{Binding FaltantesEnSecondary}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>

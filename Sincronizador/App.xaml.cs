@@ -27,8 +27,9 @@ public partial class App : Application
         ConfigureServices(serviceCollection);
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
-        
-        
+
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        mainWindow.Show();
     }
 
     private void ConfigureServices(ServiceCollection services)
@@ -96,13 +97,6 @@ public partial class App : Application
 
             return settings;
         }
-    }
-
-    private void OnStartup(object sender, StartupEventArgs e)
-    {
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-
-        mainWindow.Show();
     }
 }
 
