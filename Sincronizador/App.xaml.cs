@@ -28,9 +28,7 @@ public partial class App : Application
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
         
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-
-        mainWindow.Show();
+        
     }
 
     private void ConfigureServices(ServiceCollection services)
@@ -41,12 +39,13 @@ public partial class App : Application
 
         services.AddHttpClient<IApiService, ApiService>("CommonHttpClient", client =>
         {
-            client.BaseAddress = new Uri(settings.ServerUri);
+            client.BaseAddress = new Uri(settings.ServerUri ?? throw new InvalidDataException("ServerUri de settings.json es nulo"));
             client.Timeout = TimeSpan.FromSeconds(20);
         });
         services.AddSingleton<IApiService, ApiService>();
 
         services.AddSingleton<IDocumentoService, DocumentoService>();
+
         services.AddSingleton<VMSincronizador>(provider =>
         {
             DbContextOptionsBuilder<ContpaqiSQLContext> optionsFiscal = new();
@@ -58,7 +57,7 @@ public partial class App : Application
                     errorNumbersToAdd: null));
 
             DbContextOptionsBuilder<ContpaqiSQLContext> optionsNoFiscal = new();
-            optionsFiscal.UseSqlServer(
+            optionsNoFiscal.UseSqlServer(
                 settings.NoFiscalConnectionString,
                 sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
@@ -70,7 +69,7 @@ public partial class App : Application
             return new VMSincronizador(
                 optionsFiscal.Options,
                 optionsNoFiscal.Options,
-                settings.SerieDefault ?? throw new Exception("SerieDefault de settings nula"),
+                settings.ConceptoDefault ?? throw new Exception("SerieDefault de settings nula"),
                 documentoService);
         });
     }
@@ -92,11 +91,18 @@ public partial class App : Application
         {
             var settings = JsonSerializer.Deserialize<SincronizadorSettings>(json) ?? throw new Exception("Json settings invalido");
 
-            if (settings.FiscalConnectionString == null || settings.NoFiscalConnectionString == null || settings.SerieDefault == null)
+            if (settings.FiscalConnectionString == null || settings.NoFiscalConnectionString == null || settings.ConceptoDefault == null)
                 throw new FileLoadException("settings.json es invalido, faltan atributos");
 
             return settings;
         }
+    }
+
+    private void OnStartup(object sender, StartupEventArgs e)
+    {
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+
+        mainWindow.Show();
     }
 }
 

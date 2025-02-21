@@ -356,6 +356,9 @@ namespace Domain.SDK_Comercial
         [DllImport("MGWServicios.dll", EntryPoint = "fSetDescripcionProducto")]
         public static extern int fSetDescripcionProducto(string aCampo, string aValor);
 
+        [DllImport("MGWServicios.dll", EntryPoint = "fRegresaExistencia")]
+        public static extern int fRegresaExistencia(string aCodigoProducto, string aCodigoAlmacen, string aAnio, string aMes, string aDia, ref double aExistencia);
+
         #endregion
 
         /// <summary>

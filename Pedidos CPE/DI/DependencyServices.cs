@@ -5,6 +5,7 @@ using Core.Application.UseCases.SDK;
 using Core.Application.UseCases.SQL.ClienteProveedor;
 using Core.Application.UseCases.SQL.Documentos;
 using Core.Application.UseCases.SQL.Productos;
+using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Repositories.DTOs;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Domain.SDK_Comercial;

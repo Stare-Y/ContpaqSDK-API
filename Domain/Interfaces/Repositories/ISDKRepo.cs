@@ -4,7 +4,7 @@ using Core.Domain.Entities.SQL;
 using Core.Domain.Exceptions;
 using Domain.SDK_Comercial;
 
-namespace Core.Domain.Interfaces.Repositories.SQL
+namespace Core.Domain.Interfaces.Repositories
 {
     public interface ISDKRepo
     {
@@ -62,6 +62,16 @@ namespace Core.Domain.Interfaces.Repositories.SQL
         /// <param name="idDocumento"></param>
         /// <returns>Id of the created movement (diferent from folio)</returns>
         Task<int> AddMovimiento(MovimientoDto movimientoDto, int idDocumento);
+
+        /// <summary>
+        /// Obtiene las existencias de un producto en un almacen en una fecha
+        /// </summary>
+        /// <remarks>AUNQUE NO ES LIMITANTE, BUENA PRACTICA ES QUE LA FECHA SIEMPRE SEA HOY</remarks>
+        /// <param name="CodigoProducto"></param>
+        /// <param name="CodigoAlmacen"></param>
+        /// <param name="fecha"></param>
+        /// <returns>Existencias del producto solicitado</returns>
+        Task<double> GetExistencias(string codigoProducto, string codigoAlmacen, DateTime fecha);
 
         /// <summary>
         /// Is required to do anything, to open the empresa in contpaqi

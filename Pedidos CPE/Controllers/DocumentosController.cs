@@ -13,9 +13,7 @@ namespace Pedidos_CPE.Controllers
     {
         private readonly Core.Domain.Interfaces.Services.ILogger _logger;
 
-        private readonly TestSDKUseCase _testSDK;
-        private readonly AddDocumentoYMovimientosSDKUseCase _addDocumentoYMovimientosSDK;
-        private readonly SetDocumentoImpresoSDKUseCase _setDocumentoImpresoSDK;
+        
 
 
         private readonly AddDocumentoYMovimientosDtoUseCase _addDocumentoYMovimientosDto;
@@ -29,67 +27,11 @@ namespace Pedidos_CPE.Controllers
             UpdateDocumentoPendienteDtoUseCase updateDocumentoPendienteDtoUseCase, GetDocumentosByIdClienteAndDateSQLUseCase getDocumentosByIdClienteAndDateSQLUseCase)
         {
             _logger = logger;
-            _testSDK = testSDKUseCase;
-            _addDocumentoYMovimientosSDK = addDocumentoYMovimientosSDKUseCase;
-            _setDocumentoImpresoSDK = setDocumentoImpresoSDKUseCase;
             _addDocumentoYMovimientosDto = addDocumentoYMovimientosDtoUseCase;
             _getDocumentosPendientesDto = getDocumentosPendientesDtoUseCase;
             _updateDocumentoPendiente = updateDocumentoPendienteDtoUseCase;
             _getDocumentosByIdClienteAndDateSQL = getDocumentosByIdClienteAndDateSQLUseCase;
         }
-
-        #region SDK Entry Points
-
-        [HttpPost]
-        [Route("/SDK/addDocumentoYMovimientos")]
-        public async Task<ActionResult<ApiResponse>> AddDocumentoYMovimientosSDK(AddDocumentoYMovimientosSDKRequest request)
-        {
-            try
-            {
-                Dictionary<int, double> idFolioDict = await _addDocumentoYMovimientosSDK.Execute(request.DocumentoDto, request.MovimientoDtos, request.Empresa);
-                return CreatedAtAction("PostDocumentAndMovements", new ApiResponse { Message = "Documento y movimientos agregados con éxito ", Data = idFolioDict, Success = true });
-            }
-            catch (Exception ex)
-            {
-                _logger.Log($"Error al agregar documento y movimientos a SDK: {ex.Message}");
-                return BadRequest(new ApiResponse { Success = false, Message = "No se pudo agregar el documento, y/o los movimientos al SDK ", ErrorDetails = ex.Message});
-            }
-        }
-
-        [HttpPut]
-        [Route("/SDK/setDocumentoImpreso/")]
-        public async Task<ActionResult<ApiResponse>> SetDocumentoImpresoSDK([FromQuery] int idDocumento, [FromQuery] string empresa)
-        {
-            try
-            {
-                await _setDocumentoImpresoSDK.Execute(idDocumento, empresa);
-
-                return Ok(new ApiResponse { Message = "Documento actualizado con éxito ", Success = true });
-            }
-            catch (Exception ex)
-            {
-                _logger.Log($"Error al establecer el documento {idDocumento} como impreso: {ex.Message}");
-                return BadRequest(new ApiResponse { Success = false, Message = $"No se pudo establecer el documento: {idDocumento} como impreso ", ErrorDetails = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        [Route("/SDK/isGood")]
-        public async Task<ActionResult<ApiResponse>> IsServiceWorkingSDK()
-        {
-            try
-            {
-                await _testSDK.Execute();
-                return Ok(new ApiResponse { Message = "ContpaqiComercial-API funcionando correctamente ", Success = true });
-            }
-            catch (Exception ex)
-            {
-                _logger.Log($"Error al probar el SDK: {ex.Message}");
-                return BadRequest(new ApiResponse { Success = false, Message = "Parece que el SDK no esta funcionando correctamente :c ", ErrorDetails = ex.Message });
-            }
-        }
-
-        #endregion
 
         [HttpPost]
         [Route("/Pendientes")]

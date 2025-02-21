@@ -1,5 +1,4 @@
-﻿using Core.Domain.Interfaces.Services;
-using Sincronizador.ViewModels;
+﻿using Sincronizador.ViewModels;
 using System.Windows;
 
 namespace Sincronizador;
@@ -15,10 +14,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         _viewModel = viewModel;
         DataContext = _viewModel;
-    }
-
-    private void btnSync_Click(object sender, RoutedEventArgs e)
-    {
-        
+        DateFechaInicio.DisplayDateEnd = DateTime.Today.AddDays(-1);
+        DateFechaFin.DisplayDateEnd = DateTime.Today;
     }
 }

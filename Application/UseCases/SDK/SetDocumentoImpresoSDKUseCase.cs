@@ -1,5 +1,4 @@
-﻿using Core.Domain.Exceptions;
-using Core.Domain.Interfaces.Repositories.SQL;
+﻿using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
 
 namespace Core.Application.UseCases.SDK
@@ -23,6 +22,7 @@ namespace Core.Application.UseCases.SDK
                 if (canWork)
                 {
                     await _sdkRepo.SetImpreso(idDocumento, true);
+
                     _sdkRepo.StopTransaction();
 
                     _logger.Log($"Documento {idDocumento}, establecido como impreso");

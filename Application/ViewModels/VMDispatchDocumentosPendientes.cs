@@ -5,6 +5,7 @@ using Core.Domain.Entities.SDK.Estructuras;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using Core.Domain.Interfaces.Services.ApiServices.Productos;
+using Core.Domain.Interfaces.Services.ApiServices.SDK;
 using System.Collections.ObjectModel;
 
 namespace Core.Application.ViewModels
@@ -14,17 +15,19 @@ namespace Core.Application.ViewModels
         private readonly IDocumentoService _documentoService = null!;
         private readonly IMovimientoService _movimientoService = null!;
         private readonly IProductoService _productoService = null!;
+        private readonly ISDKService _sDKService = null!;
         private ObservableCollection<DocumentoDto> _documentosPendientes = new();
         private DocumentoDto _documentoSeleccionado = null!;
         private List<MovimientoDto> _movimientos = new();
         private List<ProductoDto> _productos = new();
         private ObservableCollection<ViewProductoUnidades> _productosUnidades = new();
 
-        public VMDispatchDocumentosPendientes(IDocumentoService documentoService, IMovimientoService movimientoService, IProductoService productoService)
+        public VMDispatchDocumentosPendientes(IDocumentoService documentoService, IMovimientoService movimientoService, IProductoService productoService, ISDKService sDKService)
         {
             _documentoService = documentoService;
             _movimientoService = movimientoService;
             _productoService = productoService;
+            _sDKService = sDKService;
         }
 
         public VMDispatchDocumentosPendientes() { }
@@ -120,7 +123,7 @@ namespace Core.Application.ViewModels
 
             try
             {
-                var resultDTO = await _documentoService.PostDocumentoSDK(_documentoSeleccionado, Movimientos, empresa);
+                var resultDTO = await _sDKService.PostDocumentoSDK(_documentoSeleccionado, Movimientos, empresa);
                 DocumentoSeleccionado.IdContpaqiSQL = resultDTO.Keys.First();
                 DocumentoSeleccionado.Folio = resultDTO.Values.First();
             }

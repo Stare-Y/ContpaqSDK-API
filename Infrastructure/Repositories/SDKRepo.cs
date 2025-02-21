@@ -2,9 +2,9 @@
 using System.Text;
 using Core.Domain.Entities.SDK.Estructuras;
 using Core.Domain.Interfaces.Services;
-using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Exceptions;
 using Core.Domain.Entities.DTOs;
+using Core.Domain.Interfaces.Repositories;
 
 namespace Infrastructure.Repositories
 {
@@ -335,7 +335,28 @@ namespace Infrastructure.Repositories
 
         #region Producto Methods
 
+        public async Task<double> GetExistencias(string codigoProducto, string codigoAlmacen, DateTime fecha)
+        {
+            if (!_transactionInProgress)
+            {
+                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
+            }
 
+            string aAnio = fecha.Year.ToString();
+            string aMes = fecha.Month.ToString();
+            string aDia = fecha.Day.ToString();
+
+            return await Task.Run(() =>
+            {
+                double existencias = 0;
+                int lError = SDK.fRegresaExistencia(codigoProducto, codigoAlmacen, aAnio, aMes, aDia, ref existencias);
+                if (lError != 0)
+                {
+                    throw new SDKException($"Error obteniendo las existencias del producto: {codigoProducto} en el almacen: {codigoAlmacen}: ", lError);
+                }
+                return existencias;
+            });
+        }
 
         #endregion
     }
