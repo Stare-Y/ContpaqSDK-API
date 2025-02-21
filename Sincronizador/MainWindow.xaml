@@ -3,64 +3,81 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Sincronizador" xmlns:viewmodels="clr-namespace:Sincronizador.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:VMSincronizador}"
+        xmlns:local="clr-namespace:Sincronizador"
+        xmlns:viewmodels="clr-namespace:Sincronizador.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:VMSincronizador}"
         mc:Ignorable="d"
-        Title="Sincronizador de Compras" Height="450" Width="800">
-    <Grid>
+        Title="Sincronizador de Compras"
+        Height="450"
+        Width="800">
+
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
-            <RowDefinition />
+            <!-- Header -->
+            <RowDefinition/>
+            <!-- Listas -->
             <RowDefinition Height="50"/>
+            <!-- Footer (si se usa en el futuro) -->
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="1" >
-            <StackPanel Orientation="Horizontal">
+        <!-- Filtros de búsqueda -->
+        <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Padding="10">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Label Content="Fecha de inicio:"/>
-                <DatePicker Name="DateFechaInicio" SelectedDate="{Binding FechaInicio}"/> <!-- On conde behind, date is limited to yesterday-->
+                <DatePicker Name="DateFechaInicio" SelectedDate="{Binding FechaInicio}"/>
+
                 <Label Content="Fecha fin:" />
                 <DatePicker Name="DateFechaFin" SelectedDate="{Binding FechaFin}"/>
-                <Label Content="Codigo del concepto a buscar:" />
+
+                <Label Content="Código del concepto a buscar:" />
                 <TextBox Name="TxtSerie" Width="100" Text="{Binding Concepto}"/>
+
                 <Button Name="BtnBuscar" Click="BtnBuscar_Click" Content="Buscar"/>
             </StackPanel>
         </Border>
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" >
-            <StackPanel Orientation="Horizontal">
-                <ListView Name="PrimaryDocuments" ItemsSource="{Binding PrimaryDocumentos}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
-                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
-                            <GridViewColumn Header="Total" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-                <ListView Name="SecondaryDocuments" ItemsSource="{Binding SecondaryDocumentos}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
-                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
-                            <GridViewColumn Header="Total" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-                <ListView Name="FaltantesEnSecondary" ItemsSource="{Binding FaltantesEnSecondary}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
-                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
-                            <GridViewColumn Header="Total" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </StackPanel>
-        </Border>
 
+        <!-- Listas de documentos -->
+        <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Padding="10">
+            <UniformGrid Columns="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
+
+                <!-- Documentos Primarios -->
+                <ListView Name="PrimaryDocuments" ItemsSource="{Binding PrimaryDocumentos}" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                            <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <!-- Documentos Secundarios -->
+                <ListView Name="SecondaryDocuments" ItemsSource="{Binding SecondaryDocumentos}" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                            <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <!-- Documentos Faltantes -->
+                <ListView Name="FaltantesEnSecondary" ItemsSource="{Binding FaltantesEnSecondary}" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                            <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+            </UniformGrid>
+        </Border>
     </Grid>
 </Window>
