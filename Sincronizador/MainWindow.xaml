@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition />
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -23,8 +23,43 @@
                 <Label Content="Fecha fin:" />
                 <DatePicker Name="DateFechaFin" SelectedDate="{Binding FechaFin}"/>
                 <Label Content="Codigo del concepto a buscar:" />
-                <TextBox Name="TxtSerie" Width="100" Text="{Binding Serie}"/>
+                <TextBlock Name="TxtSerie" Width="100" Text="{Binding Concepto}"/>
             </StackPanel>
         </Border>
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" >
+            <StackPanel Orientation="Horizontal">
+                <ListView Name="PrimaryDocuments" DataContext="{Binding PrimaryDocumentos}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                            <GridViewColumn Header="Total" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <ListView Name="SecondaryDocuments" DataContext="{Binding SecondaryDocumentos}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                            <GridViewColumn Header="Total" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <ListView Name="FaltantesEnSecondary" DataContext="{Binding FaltantesEnSecondary}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                            <GridViewColumn Header="Total" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </Window>

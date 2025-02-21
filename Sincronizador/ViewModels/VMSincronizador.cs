@@ -20,10 +20,10 @@ namespace Sincronizador.ViewModels
 
         public string Concepto { get; set; }
 
-        public ObservableCollection<DocumentoSQL> DocumentosNoFiscal { get; set; } = new();
+        public ObservableCollection<DocumentoSQL> PrimaryDocumentos { get; set; } = new();
 
-        public ObservableCollection<DocumentoSQL> DocumentosFiscal { get; set; } = new();
-        public ObservableCollection<DocumentoSQL> FaltantesEnFiscal { get; set; } = new();
+        public ObservableCollection<DocumentoSQL> SecondaryDocumentos { get; set; } = new();
+        public ObservableCollection<DocumentoSQL> FaltantesEnSecondary { get; set; } = new();
 
         public VMSincronizador(DbContextOptions<ContpaqiSQLContext> optionsFiscal, 
             DbContextOptions<ContpaqiSQLContext> optionsNoFiscal, string concepto, 
@@ -49,7 +49,7 @@ namespace Sincronizador.ViewModels
                 throw new Exception("Las fechas no pueden ser nulas");
             }
 
-            FaltantesEnFiscal.Clear();
+            FaltantesEnSecondary.Clear();
 
             ConceptoSQL concepto;
 
@@ -59,7 +59,7 @@ namespace Sincronizador.ViewModels
                 concepto = noFiscalSQLContext.conceptos.FirstOrDefault(c => c.CCODIGOCONCEPTO == Concepto) ??
                     throw new KeyNotFoundException("Error, el concepto proporcionado no se encontro en la base de datos.") ;
 
-                DocumentosNoFiscal = new ObservableCollection<DocumentoSQL>(
+                PrimaryDocumentos = new ObservableCollection<DocumentoSQL>(
                     await noFiscalSQLContext.documents
                         .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
                         .ToListAsync()
@@ -69,7 +69,7 @@ namespace Sincronizador.ViewModels
             // Obtener documentos Fiscal
             using (var fiscalSQLContext = new ContpaqiSQLContext(_fiscalOptions))
             {
-                DocumentosFiscal = new ObservableCollection<DocumentoSQL>(
+                SecondaryDocumentos = new ObservableCollection<DocumentoSQL>(
                     await fiscalSQLContext.documents
                         .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
                         .ToListAsync()
@@ -77,17 +77,17 @@ namespace Sincronizador.ViewModels
             }
 
             // Separando faltantes en fiscal
-            foreach (var documento in DocumentosNoFiscal)
+            foreach (var documento in PrimaryDocumentos)
             {
-                if (!DocumentosFiscal.Any(d => d.CFOLIO == documento.CFOLIO && d.CSERIEDOCUMENTO == documento.CSERIEDOCUMENTO))
+                if (!SecondaryDocumentos.Any(d => d.CFOLIO == documento.CFOLIO && d.CSERIEDOCUMENTO == documento.CSERIEDOCUMENTO))
                 {
-                    FaltantesEnFiscal.Add(documento);
+                    FaltantesEnSecondary.Add(documento);
                 }
             }
 
-            OnPropertyChanged(nameof(DocumentosNoFiscal));
-            OnPropertyChanged(nameof(DocumentosFiscal));
-            OnPropertyChanged(nameof(FaltantesEnFiscal));
+            OnPropertyChanged(nameof(PrimaryDocumentos));
+            OnPropertyChanged(nameof(SecondaryDocumentos));
+            OnPropertyChanged(nameof(FaltantesEnSecondary));
         }
 
         public Task PostDocumentoToSDK(DocumentoSQL documento)

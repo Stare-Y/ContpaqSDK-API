@@ -1,7 +1,6 @@
 ﻿using Core.Application.ViewModels.Base;
 using Core.Application.ViewModels.ObservableEntity;
 using Core.Domain.Entities.DTOs;
-using Core.Domain.Entities.SDK.Estructuras;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Core.Domain.Interfaces.Services.ApiServices.Movimientos;
 using Core.Domain.Interfaces.Services.ApiServices.Productos;

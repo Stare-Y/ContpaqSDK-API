@@ -1,6 +1,4 @@
 ﻿using Core.Application.UseCases.Postgres.Requests;
-using Core.Application.UseCases.SDK.Requests;
-using Core.Domain.Entities;
 using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
