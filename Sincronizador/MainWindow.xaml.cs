@@ -25,20 +25,7 @@ public partial class MainWindow : Window
     {
         await _viewModel.GetDocumentosFiltrados();
 
-        foreach (var item in PrimaryDocuments.Items)
-        {
-            var listViewItem = (ListViewItem)PrimaryDocuments.ItemContainerGenerator.ContainerFromItem(item);
-            if (listViewItem != null)
-            {
-                DocumentoSQL? documento = item as DocumentoSQL;
-                if (documento != null)
-                {
-                    listViewItem.Background = _viewModel.FaltantesEnSecondary.Contains(documento)
-                        ? Brushes.LightGoldenrodYellow  // Color de resaltado
-                        : Brushes.White;                // Color normal
-                }
-            }
-        }
+        HighlightListDifferences();
     }
 
     private void FaltantesEnSecondary_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -57,6 +44,14 @@ public partial class MainWindow : Window
 
     private async void BtnEnviarDocumentos_Click(object sender, RoutedEventArgs e)
     {
+        //display a message box to confirm if we want to send the documents
+        MessageBoxResult result = MessageBox.Show($"Se enviaran {_viewModel.DocumentosSeleccionados.Count} documentos a Comercial\n\nEstas de acuedo?", "Confirmar envio de documentos", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.No)
+        {
+            return;
+        }
+
         string errorsCatched = string.Empty;
         int successCount = 0;
         int errorCount = 0;
@@ -70,18 +65,40 @@ public partial class MainWindow : Window
             }
             catch (Exception ex)
             {
-                errorsCatched += $"Error al enviar documento SERIE: {documento.CFOLIO} FOLIO: {documento.CSERIEDOCUMENTO} a Comercial: {ex.Message}\n";
+                errorsCatched += $"Error al enviar documento SERIE: {documento.CFOLIO} FOLIO: {documento.CSERIEDOCUMENTO} a Comercial: {ex.Message}\n\n";
                 errorCount++;
             }
         }
 
         if (!string.IsNullOrEmpty(errorsCatched) && errorCount != 0)
         {
-            MessageBox.Show("Error al enviar documentos a Comercial", $"Se enviaron exitosamente {successCount}, {errorCount} documentos tuvieron problemas: {errorsCatched}", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Se enviaron exitosamente {successCount}, pero {errorCount} documentos tuvieron problemas:\n{errorsCatched}", "Error al enviar documentos a Comercial", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         else
         {
-            MessageBox.Show($"{successCount} Documentos enviados con exito", $"Se enviaron {successCount} Documentos a Contpaqi Comercial sin errores", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Se enviaron {successCount} Documentos a Contpaqi Comercial sin errores", $"{successCount} Documentos enviados con exito", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        await _viewModel.GetDocumentosFiltrados();
+
+        HighlightListDifferences();
+    }
+
+    private void HighlightListDifferences()
+    {
+        foreach (var item in PrimaryDocuments.Items)
+        {
+            var listViewItem = (ListViewItem)PrimaryDocuments.ItemContainerGenerator.ContainerFromItem(item);
+            if (listViewItem != null)
+            {
+                DocumentoSQL? documento = item as DocumentoSQL;
+                if (documento != null)
+                {
+                    listViewItem.Background = _viewModel.FaltantesEnSecondary.Contains(documento)
+                        ? Brushes.LightGoldenrodYellow  // Color de resaltado
+                        : Brushes.White;                // Color normal
+                }
+            }
         }
     }
 }
