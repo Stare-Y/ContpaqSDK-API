@@ -83,6 +83,7 @@ namespace Pedidos_CPE.DI
             builder.Services.AddTransient<AddDocumentoYMovimientosSDKUseCase>();
             builder.Services.AddTransient<TestSDKUseCase>();
             builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
+            builder.Services.AddTransient<GetExistenciasSDKUseCase>();
 
             #endregion
 

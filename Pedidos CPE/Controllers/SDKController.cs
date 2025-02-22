@@ -37,7 +37,7 @@ namespace Pedidos_CPE.Controllers
             try
             {
                 Dictionary<int, double> idFolioDict = await _addDocumentoYMovimientosSDK.Execute(request.DocumentoDto, request.MovimientoDtos, request.Empresa);
-                return CreatedAtAction("PostDocumentAndMovements", new ApiResponse { Message = "Documento y movimientos agregados con éxito ", Data = idFolioDict, Success = true });
+                return Ok(new ApiResponse { Message = "Documento y movimientos agregados con éxito ", Data = idFolioDict, Success = true });
             }
             catch (Exception ex)
             {

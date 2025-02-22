@@ -8,8 +8,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:VMSincronizador}"
         mc:Ignorable="d"
         Title="Sincronizador de Compras"
-        Height="450"
-        Width="800">
+        WindowState="Maximized">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -42,40 +41,52 @@
             <UniformGrid Columns="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
 
                 <!-- Documentos Primarios -->
-                <ListView Name="PrimaryDocuments" ItemsSource="{Binding PrimaryDocumentos}" Margin="5">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
-                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
-                            <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <StackPanel Margin="5">
+                    <Label Content="{Binding PrimaryEmpresaName}" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <ListView Name="PrimaryDocuments" ItemsSource="{Binding PrimaryDocumentos}" IsManipulationEnabled="False">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                                <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                                <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                                <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
 
                 <!-- Documentos Secundarios -->
-                <ListView Name="SecondaryDocuments" ItemsSource="{Binding SecondaryDocumentos}" Margin="5">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
-                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
-                            <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <StackPanel Margin="5">
+                    <Label Content="{Binding SecondaryEmpresaName}" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <ListView Name="SecondaryDocuments" ItemsSource="{Binding SecondaryDocumentos}" IsManipulationEnabled="False">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                                <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                                <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                                <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
 
                 <!-- Documentos Faltantes -->
-                <ListView Name="FaltantesEnSecondary" ItemsSource="{Binding FaltantesEnSecondary}" Margin="5">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
-                            <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                            <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
-                            <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <StackPanel Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding FaltantesCount}" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <Button Name="BtnEnviarDocumentos" Content="Enviar" Visibility="Hidden" Click="BtnEnviarDocumentos_Click"/>
+                    </StackPanel>
+                    <ListView Name="FaltantesEnSecondary" ItemsSource="{Binding FaltantesEnSecondary}" SelectionMode="Multiple" SelectionChanged="FaltantesEnSecondary_SelectionChanged">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
+                                <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
+                                <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                                <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
 
             </UniformGrid>
         </Border>

@@ -1,6 +1,11 @@
 {
-  "PrimaryConnectionString": "Server=localhost,1919;Database=adJOSE_DE_JESUS_MARQUE;User Id=sa;Password=$Index123459.;TrustServerCertificate=True;",
-  "SecondaryConnectionString": "Server=localhost,1919;Database=adKARINA_MARTIN_GUZMAN;User Id=sa;Password=$Index123459.;TrustServerCertificate=True;",
+  "PrimaryEmpresaName": "Materiales la Loma",
+  "PrimaryConnectionString": "Server=localhost,1919;Database=adKARINA_MARTIN_GUZMAN;User Id=sa;Password=$Index123459.;TrustServerCertificate=True;",
+  "SecondaryEmpresaName": "ALEJANDRA MARQUEZ MORAN",
+  "CodigoAlmacen": "01",
+  "SecondaryConnectionString": "Server=localhost,1919;Database=adJOSE_DE_JESUS_MARQUE;User Id=sa;Password=$Index123459.;TrustServerCertificate=True;",
   "ConceptoDefault": "21",
+  "CodigoClasificacion": "01",
+  "TargetEmpresa": "adJOSE_DE_JESUS_MARQUE",
   "ServerUri": "http://localhost:6969/"
 }

@@ -1,8 +1,11 @@
-﻿using Core.Domain.Interfaces.Services.ApiServices;
+﻿using Core.Domain.Entities;
+using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.Documentos;
+using Core.Domain.Interfaces.Services.ApiServices.SDK;
 using Infrastructure.Context;
 using Infrastructure.Services.API;
 using Infrastructure.Services.API.Documentos;
+using Infrastructure.Services.API.SDK;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Sincronizador.Models;
@@ -43,9 +46,8 @@ public partial class App : Application
             client.BaseAddress = new Uri(settings.ServerUri ?? throw new InvalidDataException("ServerUri de settings.json es nulo"));
             client.Timeout = TimeSpan.FromSeconds(20);
         });
-        services.AddSingleton<IApiService, ApiService>();
 
-        services.AddSingleton<IDocumentoService, DocumentoService>();
+        services.AddSingleton<ISDKService, SDKService>();
 
         services.AddSingleton<VMSincronizador>(provider =>
         {
@@ -65,13 +67,13 @@ public partial class App : Application
                     maxRetryDelay: TimeSpan.FromSeconds(5),
                     errorNumbersToAdd: null));
 
-            var documentoService = provider.GetRequiredService<IDocumentoService>();
+            var sDKService = provider.GetRequiredService<ISDKService>();
 
             return new VMSincronizador(
                 primaryDbOptions.Options,
                 secondaryDbOptions.Options,
-                settings.ConceptoDefault ?? throw new Exception("SerieDefault de settings nula"),
-                documentoService);
+                settings,
+                sDKService);
         });
     }
 
