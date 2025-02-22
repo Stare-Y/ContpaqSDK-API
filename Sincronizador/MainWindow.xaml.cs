@@ -30,10 +30,13 @@ public partial class MainWindow : Window
             var listViewItem = (ListViewItem)PrimaryDocuments.ItemContainerGenerator.ContainerFromItem(item);
             if (listViewItem != null)
             {
-                var documento = item as DocumentoSQL;
-                listViewItem.Background = _viewModel.FaltantesEnSecondary.Contains(documento)
-                    ? Brushes.LightGoldenrodYellow  // Color de resaltado
-                    : Brushes.White;                // Color normal
+                DocumentoSQL? documento = item as DocumentoSQL;
+                if (documento != null)
+                {
+                    listViewItem.Background = _viewModel.FaltantesEnSecondary.Contains(documento)
+                        ? Brushes.LightGoldenrodYellow  // Color de resaltado
+                        : Brushes.White;                // Color normal
+                }
             }
         }
     }
@@ -55,26 +58,30 @@ public partial class MainWindow : Window
     private async void BtnEnviarDocumentos_Click(object sender, RoutedEventArgs e)
     {
         string errorsCatched = string.Empty;
+        int successCount = 0;
+        int errorCount = 0;
 
         foreach (var documento in _viewModel.DocumentosSeleccionados)
         {
             try
             {
                 await _viewModel.PostDocumentoToSDK(documento);
+                successCount++;
             }
             catch (Exception ex)
             {
                 errorsCatched += $"Error al enviar documento SERIE: {documento.CFOLIO} FOLIO: {documento.CSERIEDOCUMENTO} a Comercial: {ex.Message}\n";
+                errorCount++;
             }
         }
 
-        if (!string.IsNullOrEmpty(errorsCatched))
+        if (!string.IsNullOrEmpty(errorsCatched) && errorCount != 0)
         {
-            MessageBox.Show(errorsCatched, "Error al enviar documentos a Comercial", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Error al enviar documentos a Comercial", $"Se enviaron exitosamente {successCount}, {errorCount} documentos tuvieron problemas: {errorsCatched}", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         else
         {
-            MessageBox.Show("Documentos enviados a Comercial con éxito", "Envío exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"{successCount} Documentos enviados con exito", $"Se enviaron {successCount} Documentos a Contpaqi Comercial sin errores", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
