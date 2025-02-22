@@ -90,15 +90,20 @@
 
             </UniformGrid>
         </Border>
-        <Border Grid.Column="2" Padding="5">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        
+        <Border Grid.Row="2" Padding="5">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
                 <!-- Texto de progreso -->
-                <TextBlock x:Name="TxtProgress" Text="0%" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock x:Name="TxtProgress" Text="0%" Visibility="Hidden" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0"/>
 
                 <!-- ProgressBar expandiéndose al resto del espacio -->
-                <ProgressBar x:Name="ProgressBarEnvio" Minimum="0" Maximum="100" Height="20" 
-                     VerticalAlignment="Center" Visibility="Collapsed" Width="Auto" />
-            </StackPanel>
+                <ProgressBar x:Name="ProgressBarEnvio" Minimum="0" Maximum="100" Height="20"  Grid.Column="1"
+                     VerticalAlignment="Center" Visibility="Hidden" />
+            </Grid>
         </Border>
     </Grid>
 </Window>

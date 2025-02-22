@@ -1,9 +1,9 @@
 ﻿using Core.Domain.Entities.SQL;
 using Sincronizador.ViewModels;
+using Sincronizador.Views;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TuApp.Views;
 
 namespace Sincronizador;
 
@@ -12,7 +12,7 @@ namespace Sincronizador;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private readonly LoadingWindow _loadingWindow = new();
+    private LoadingWindow _loadingWindow;
 
     private readonly VMSincronizador _viewModel = null!;
     public MainWindow(VMSincronizador viewModel)
@@ -22,13 +22,17 @@ public partial class MainWindow : Window
         DataContext = _viewModel;
         DateFechaInicio.DisplayDateEnd = DateTime.Today.AddDays(-1);
         DateFechaFin.DisplayDateEnd = DateTime.Today;
+        _loadingWindow = new();
     }
 
     private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
     {
         _loadingWindow.Show();
 
+
         await _viewModel.GetDocumentosFiltrados();
+
+        await Task.Delay(1000);
 
         HighlightListDifferences();
 
