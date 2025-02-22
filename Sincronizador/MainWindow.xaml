@@ -48,7 +48,13 @@
                             <GridView>
                                 <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
                                 <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                                <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                                <GridViewColumn Header="Fecha" >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding CFECHA, StringFormat={}{0:dd/MM/yyyy}}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
                             </GridView>
                         </ListView.View>
@@ -63,7 +69,14 @@
                             <GridView>
                                 <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
                                 <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                                <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                                <GridViewColumn Header="Fecha" >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding CFECHA, StringFormat={}{0:dd/MM/yyyy}}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
                                 <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
                             </GridView>
                         </ListView.View>
@@ -81,7 +94,14 @@
                             <GridView>
                                 <GridViewColumn Header="Serie" DisplayMemberBinding="{Binding CSERIEDOCUMENTO}"/>
                                 <GridViewColumn Header="Folio" DisplayMemberBinding="{Binding CFOLIO}"/>
-                                <GridViewColumn Header="Fecha" DisplayMemberBinding="{Binding CFECHA}"/>
+                                <GridViewColumn Header="Fecha" >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding CFECHA, StringFormat={}{0:dd/MM/yyyy}}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
                                 <GridViewColumn Header="Razon Social" DisplayMemberBinding="{Binding CRAZONSOCIAL}"/>
                             </GridView>
                         </ListView.View>

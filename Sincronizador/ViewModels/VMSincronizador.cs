@@ -1,10 +1,9 @@
 ﻿using Core.Application.ViewModels.Base;
 using Core.Domain.Entities.DTOs;
 using Core.Domain.Entities.SQL;
-using Core.Domain.Interfaces.Services.ApiServices.Documentos;
 using Core.Domain.Interfaces.Services.ApiServices.SDK;
 using Infrastructure.Context;
-using Infrastructure.Services.API.SDK;
+using Infrastructure.Services.API.Documentos;
 using Microsoft.EntityFrameworkCore;
 using Sincronizador.Models;
 using System.Collections.ObjectModel;

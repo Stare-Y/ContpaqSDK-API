@@ -25,7 +25,19 @@ public partial class MainWindow : Window
         _loadingWindow = new();
     }
 
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        _loadingWindow.Close();
+        Application.Current.Shutdown();
+    }
+
     private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
+    {
+        await GetDocumentos();
+    }
+
+    private async Task GetDocumentos()
     {
         _loadingWindow.Show();
 
@@ -36,7 +48,7 @@ public partial class MainWindow : Window
 
         HighlightListDifferences();
 
-        _loadingWindow.Close();
+        _loadingWindow.Hide();
     }
 
     private void FaltantesEnSecondary_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -55,6 +67,11 @@ public partial class MainWindow : Window
 
     private async void BtnEnviarDocumentos_Click(object sender, RoutedEventArgs e)
     {
+        if (_viewModel.DocumentosSeleccionados.Count == 0)
+        {
+            MessageBox.Show("No hay documentos seleccionados para enviar, elije almenos uno por favor", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
         //display a message box to confirm if we want to send the documents
         MessageBoxResult result = MessageBox.Show($"Se enviaran {_viewModel.DocumentosSeleccionados.Count} documentos a Comercial\n\nEstas de acuedo?", "Confirmar envio de documentos", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -68,6 +85,7 @@ public partial class MainWindow : Window
         string errorsCatched = string.Empty;
         int successCount = 0;
         int errorCount = 0;
+        int total = _viewModel.DocumentosSeleccionados.Count;
 
         foreach (var documento in _viewModel.DocumentosSeleccionados)
         {
@@ -81,33 +99,37 @@ public partial class MainWindow : Window
                 errorsCatched += $"Error al enviar documento SERIE: {documento.CFOLIO} FOLIO: {documento.CSERIEDOCUMENTO} a Comercial: {ex.Message}\n\n";
                 errorCount++;
             }
-
-            UpdateProgressBar(successCount + errorCount);
+            finally
+            {
+                UpdateProgressBar(successCount + errorCount, total);
+            }
         }
 
-        await Task.Delay(1000);
-
-        HideProgressBar();
 
         if (!string.IsNullOrEmpty(errorsCatched) && errorCount != 0)
         {
-            MessageBox.Show($"Se enviaron exitosamente {successCount}, pero {errorCount} documentos tuvieron problemas:\n{errorsCatched}", "Error al enviar documentos a Comercial", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Se enviaron exitosamente {successCount}, pero {errorCount} documentos tuvieron problemas:\n{errorsCatched}", "Hubieron algunos errores", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         else
         {
             MessageBox.Show($"Se enviaron {successCount} Documentos a Contpaqi Comercial sin errores", $"{successCount} Documentos enviados con exito", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        await _viewModel.GetDocumentosFiltrados();
+        await GetDocumentos();
 
         HighlightListDifferences();
     }
 
-    private void UpdateProgressBar(int itemsGoing)
+    private void UpdateProgressBar(int itemsGoing, int total)
     {
-        int progress = (itemsGoing * 100) / _viewModel.DocumentosSeleccionados.Count;
+        int progress = (itemsGoing * 100) / total;
         ProgressBarEnvio.Value = progress;
         TxtProgress.Text = $"{progress}%";
+
+        if (progress == 100)
+        {
+            HideProgressBar();
+        }
     }
 
     private void ShowProgressBar()
@@ -140,5 +162,6 @@ public partial class MainWindow : Window
                 }
             }
         }
+
     }
 }
