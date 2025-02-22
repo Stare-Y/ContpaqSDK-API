@@ -3,6 +3,7 @@ using Sincronizador.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using TuApp.Views;
 
 namespace Sincronizador;
 
@@ -11,6 +12,8 @@ namespace Sincronizador;
 /// </summary>
 public partial class MainWindow : Window
 {
+    private readonly LoadingWindow _loadingWindow = new();
+
     private readonly VMSincronizador _viewModel = null!;
     public MainWindow(VMSincronizador viewModel)
     {
@@ -23,9 +26,13 @@ public partial class MainWindow : Window
 
     private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
     {
+        _loadingWindow.Show();
+
         await _viewModel.GetDocumentosFiltrados();
 
         HighlightListDifferences();
+
+        _loadingWindow.Close();
     }
 
     private void FaltantesEnSecondary_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
