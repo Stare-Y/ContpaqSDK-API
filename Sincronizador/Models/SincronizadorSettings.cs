@@ -2,8 +2,8 @@
 {
     class SincronizadorSettings
     {
-        public string? FiscalConnectionString { get; set; }
-        public string? NoFiscalConnectionString { get; set; }
+        public string? PrimaryConnectionString { get; set; }
+        public string? SecondaryConnectionString { get; set; }
         public string? ConceptoDefault { get; set; }
         public string? ServerUri { get; set; }
     }

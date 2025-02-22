@@ -49,17 +49,17 @@ public partial class App : Application
 
         services.AddSingleton<VMSincronizador>(provider =>
         {
-            DbContextOptionsBuilder<ContpaqiSQLContext> optionsFiscal = new();
-            optionsFiscal.UseSqlServer(
-                settings.FiscalConnectionString,
+            DbContextOptionsBuilder<ContpaqiSQLContext> primaryDbOptions = new();
+            primaryDbOptions.UseSqlServer(
+                settings.PrimaryConnectionString,
                 sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(5),
                     errorNumbersToAdd: null));
 
-            DbContextOptionsBuilder<ContpaqiSQLContext> optionsNoFiscal = new();
-            optionsNoFiscal.UseSqlServer(
-                settings.NoFiscalConnectionString,
+            DbContextOptionsBuilder<ContpaqiSQLContext> secondaryDbOptions = new();
+            secondaryDbOptions.UseSqlServer(
+                settings.SecondaryConnectionString,
                 sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(5),
@@ -68,8 +68,8 @@ public partial class App : Application
             var documentoService = provider.GetRequiredService<IDocumentoService>();
 
             return new VMSincronizador(
-                optionsFiscal.Options,
-                optionsNoFiscal.Options,
+                primaryDbOptions.Options,
+                secondaryDbOptions.Options,
                 settings.ConceptoDefault ?? throw new Exception("SerieDefault de settings nula"),
                 documentoService);
         });
@@ -92,7 +92,7 @@ public partial class App : Application
         {
             var settings = JsonSerializer.Deserialize<SincronizadorSettings>(json) ?? throw new Exception("Json settings invalido");
 
-            if (settings.FiscalConnectionString == null || settings.NoFiscalConnectionString == null || settings.ConceptoDefault == null)
+            if (settings.PrimaryConnectionString == null || settings.SecondaryConnectionString == null || settings.ConceptoDefault == null)
                 throw new FileLoadException("settings.json es invalido, faltan atributos");
 
             return settings;

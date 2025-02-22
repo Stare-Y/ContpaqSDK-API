@@ -10,8 +10,8 @@ namespace Sincronizador.ViewModels
     public class VMSincronizador : ViewModelBase
     {
         private readonly IDocumentoService _documentoService;
-        private readonly DbContextOptions<ContpaqiSQLContext> _fiscalOptions;
-        private readonly DbContextOptions<ContpaqiSQLContext> _noFiscalOptions;
+        private readonly DbContextOptions<ContpaqiSQLContext> _primaryDbOptions;
+        private readonly DbContextOptions<ContpaqiSQLContext> _secondaryDbOptions;
 
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
@@ -25,12 +25,12 @@ namespace Sincronizador.ViewModels
         public ObservableCollection<DocumentoSQL> SecondaryDocumentos { get; set; } = new();
         public ObservableCollection<DocumentoSQL> FaltantesEnSecondary { get; set; } = new();
 
-        public VMSincronizador(DbContextOptions<ContpaqiSQLContext> optionsFiscal, 
-            DbContextOptions<ContpaqiSQLContext> optionsNoFiscal, string concepto, 
+        public VMSincronizador(DbContextOptions<ContpaqiSQLContext> primaryDbOptions, 
+            DbContextOptions<ContpaqiSQLContext> secondaryDbOptions, string concepto, 
             IDocumentoService documentoService)
         {
-            _fiscalOptions = optionsFiscal;
-            _noFiscalOptions = optionsNoFiscal;
+            _primaryDbOptions = primaryDbOptions;
+            _secondaryDbOptions = secondaryDbOptions;
             Concepto = concepto;
             _documentoService = documentoService;
             FechaFin = DateTime.Today;
@@ -39,41 +39,48 @@ namespace Sincronizador.ViewModels
 
         public async Task GetDocumentosFiltrados()
         {
-            if(FechaFin < FechaInicio)
+            ValidarParametrosConsulta();
+
+            await ActualizarListasDocumentos();
+        }
+
+        private async Task ActualizarListasDocumentos()
+        {
+            ConceptoSQL concepto = await GetConcepto();
+
+            await GetPrimaryDocumentos(concepto);
+
+            await GetSecondaryDocumentos(concepto);
+
+            SepararFaltantes();
+
+            NotificarDocumentosActualizados();
+        }
+
+        private void ValidarParametrosConsulta()
+        {
+            if (FechaFin < FechaInicio)
             {
                 throw new Exception("La fecha de inicio no puede ser mayor a la fecha de fin");
             }
 
-            if(FechaFin == default || FechaInicio == default)
+            if (FechaFin == default || FechaInicio == default)
             {
                 throw new Exception("Las fechas no pueden ser nulas");
             }
 
-            FaltantesEnSecondary.Clear();
-
-            ConceptoSQL concepto;
-
-            // Obtener documentos No Fiscal
-            using (var noFiscalSQLContext = new ContpaqiSQLContext(_noFiscalOptions))
+            if (string.IsNullOrEmpty(Concepto))
             {
-                concepto = noFiscalSQLContext.conceptos.FirstOrDefault(c => c.CCODIGOCONCEPTO == Concepto) ??
-        throw new KeyNotFoundException("Error, el concepto proporcionado no se encontro en la base de datos.");
-
-                var documentos = await noFiscalSQLContext.documents
-                    .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
-                    .ToListAsync();
-
-                PrimaryDocumentos.Clear();
-                foreach (var doc in documentos)
-                {
-                    PrimaryDocumentos.Add(doc);
-                }
+                throw new Exception("El concepto no puede ser nulo o vacio");
             }
+        }
 
-            // Obtener documentos Fiscal
-            using (var fiscalSQLContext = new ContpaqiSQLContext(_fiscalOptions))
+        private async Task GetSecondaryDocumentos(ConceptoSQL concepto)
+        {
+            using (var secondarySQLDbContext = new ContpaqiSQLContext(_secondaryDbOptions))
             {
-                var documentos = await fiscalSQLContext.documents
+                var documentos = await secondarySQLDbContext.Documentos
+                    .AsNoTracking()
                     .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
                     .ToListAsync();
 
@@ -83,8 +90,39 @@ namespace Sincronizador.ViewModels
                     SecondaryDocumentos.Add(doc);
                 }
             }
+        }
 
-            // Separando faltantes en fiscal
+        private async Task GetPrimaryDocumentos(ConceptoSQL concepto)
+        {
+            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
+            {
+                var documentos = await primarySQLDbContext.Documentos
+                    .AsNoTracking()
+                    .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
+                    .ToListAsync();
+
+                PrimaryDocumentos.Clear();
+                foreach (var doc in documentos)
+                {
+                    PrimaryDocumentos.Add(doc);
+                }
+            }
+        }
+
+        private async Task<ConceptoSQL> GetConcepto()
+        {
+            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
+            {
+                return await primarySQLDbContext.Conceptos
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.CCODIGOCONCEPTO == Concepto) ??
+                        throw new KeyNotFoundException("Error, el concepto proporcionado no se encontro en la base de datos.");
+            }
+        }
+
+        private void SepararFaltantes()
+        {
+            FaltantesEnSecondary.Clear();
             foreach (var documento in PrimaryDocumentos)
             {
                 if (!SecondaryDocumentos.Any(d => d.CFOLIO == documento.CFOLIO && d.CSERIEDOCUMENTO == documento.CSERIEDOCUMENTO))
@@ -92,7 +130,10 @@ namespace Sincronizador.ViewModels
                     FaltantesEnSecondary.Add(documento);
                 }
             }
+        }
 
+        private void NotificarDocumentosActualizados()
+        {
             OnPropertyChanged(nameof(PrimaryDocumentos));
             OnPropertyChanged(nameof(SecondaryDocumentos));
             OnPropertyChanged(nameof(FaltantesEnSecondary));

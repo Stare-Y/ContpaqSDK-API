@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories.SQL
         private readonly DbSet<ClienteProveedorSQL> _clientesProveedores;
         public ClienteProveedorSQLRepo(ContpaqiSQLContext context)
         {
-            _clientesProveedores = context.clientesProveedores;
+            _clientesProveedores = context.ClientesProveedores;
         }
 
         public async Task<IEnumerable<ClienteProveedorSQL>> SearchByName(string name, CancellationToken cancellationToken)

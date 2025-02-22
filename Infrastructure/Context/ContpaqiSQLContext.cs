@@ -5,11 +5,11 @@ namespace Infrastructure.Context
 {
     public class ContpaqiSQLContext : DbContext
     {
-        public DbSet<DocumentoSQL> documents { get; set; } = null!;
-        public DbSet<ProductoSQL> productos { get; set; } = null!;
-        public DbSet<ConceptoSQL> conceptos { get; set; } = null!;
-        public DbSet<MovimientoSQL> movimientos { get; set; } = null!;
-        public DbSet<ClienteProveedorSQL> clientesProveedores { get; set; } = null!;
+        public DbSet<DocumentoSQL> Documentos { get; set; } = null!;
+        public DbSet<ProductoSQL> Productos { get; set; } = null!;
+        public DbSet<ConceptoSQL> Conceptos { get; set; } = null!;
+        public DbSet<MovimientoSQL> Movimientos { get; set; } = null!;
+        public DbSet<ClienteProveedorSQL> ClientesProveedores { get; set; } = null!;
         public ContpaqiSQLContext(DbContextOptions<ContpaqiSQLContext> options) : base(options)
         {
 
