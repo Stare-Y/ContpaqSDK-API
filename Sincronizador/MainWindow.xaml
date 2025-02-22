@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Sincronizador de Compras"
         WindowState="Maximized"
-        Icon="/Data/stareylogo.png">
+        Icon="/Data/stareylogo.ico">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
