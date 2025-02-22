@@ -38,7 +38,7 @@
 
         <!-- Listas de documentos -->
         <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Padding="10">
-            <UniformGrid Columns="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
+            <UniformGrid Columns="3" Margin="5,5,5,5">
 
                 <!-- Documentos Primarios -->
                 <StackPanel Margin="5">
@@ -90,7 +90,7 @@
 
             </UniformGrid>
         </Border>
-        
+
         <Border Grid.Row="2" Padding="5">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
@@ -101,7 +101,7 @@
                 <TextBlock x:Name="TxtProgress" Text="0%" Visibility="Hidden" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0"/>
 
                 <!-- ProgressBar expandiéndose al resto del espacio -->
-                <ProgressBar x:Name="ProgressBarEnvio" Minimum="0" Maximum="100" Height="20"  Grid.Column="1"
+                <ProgressBar x:Name="ProgressBarEnvio" Minimum="0" Maximum="100" Height="20"  Grid.Column="1" 
                      VerticalAlignment="Center" Visibility="Hidden" />
             </Grid>
         </Border>
