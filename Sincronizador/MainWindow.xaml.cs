@@ -59,6 +59,8 @@ public partial class MainWindow : Window
             return;
         }
 
+        ShowProgressBar();
+
         string errorsCatched = string.Empty;
         int successCount = 0;
         int errorCount = 0;
@@ -75,7 +77,13 @@ public partial class MainWindow : Window
                 errorsCatched += $"Error al enviar documento SERIE: {documento.CFOLIO} FOLIO: {documento.CSERIEDOCUMENTO} a Comercial: {ex.Message}\n\n";
                 errorCount++;
             }
+
+            UpdateProgressBar(successCount + errorCount);
         }
+
+        await Task.Delay(1000);
+
+        HideProgressBar();
 
         if (!string.IsNullOrEmpty(errorsCatched) && errorCount != 0)
         {
@@ -89,6 +97,27 @@ public partial class MainWindow : Window
         await _viewModel.GetDocumentosFiltrados();
 
         HighlightListDifferences();
+    }
+
+    private void UpdateProgressBar(int itemsGoing)
+    {
+        int progress = (itemsGoing * 100) / _viewModel.DocumentosSeleccionados.Count;
+        ProgressBarEnvio.Value = progress;
+        TxtProgress.Text = $"{progress}%";
+    }
+
+    private void ShowProgressBar()
+    {
+        ProgressBarEnvio.Visibility = Visibility.Visible;
+        TxtProgress.Visibility = Visibility.Visible;
+        ProgressBarEnvio.Value = 0;
+        TxtProgress.Text = "0%";
+    }
+
+    private void HideProgressBar()
+    {
+        ProgressBarEnvio.Visibility = Visibility.Hidden;
+        TxtProgress.Visibility = Visibility.Hidden;
     }
 
     private void HighlightListDifferences()
