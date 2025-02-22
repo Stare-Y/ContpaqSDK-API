@@ -54,9 +54,27 @@ public partial class MainWindow : Window
 
     private async void BtnEnviarDocumentos_Click(object sender, RoutedEventArgs e)
     {
+        string errorsCatched = string.Empty;
+
         foreach (var documento in _viewModel.DocumentosSeleccionados)
         {
-            await _viewModel.PostDocumentoToSDK(documento);
+            try
+            {
+                await _viewModel.PostDocumentoToSDK(documento);
+            }
+            catch (Exception ex)
+            {
+                errorsCatched += $"Error al enviar documento SERIE: {documento.CFOLIO} FOLIO: {documento.CSERIEDOCUMENTO} a Comercial: {ex.Message}\n";
+            }
+        }
+
+        if (!string.IsNullOrEmpty(errorsCatched))
+        {
+            MessageBox.Show(errorsCatched, "Error al enviar documentos a Comercial", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        else
+        {
+            MessageBox.Show("Documentos enviados a Comercial con éxito", "Envío exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
