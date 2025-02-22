@@ -8,7 +8,8 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:VMSincronizador}"
         mc:Ignorable="d"
         Title="Sincronizador de Compras"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        Icon="/Data/stareylogo.png">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>

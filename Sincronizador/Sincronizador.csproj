@@ -11,10 +11,14 @@
 
   <ItemGroup>
     <None Remove="Data\settings.json" />
+    <None Remove="Data\stareylogo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Data\settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\stareylogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
