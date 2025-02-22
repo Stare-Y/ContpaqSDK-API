@@ -66,24 +66,13 @@ namespace Sincronizador.ViewModels
             _codigoClasificacion = sincronizadorSettings.CodigoClasificacion ?? throw new Exception("CodigoClasificacion fue nulo");
         }
 
+        #region GetDocumentosFiltrados
+
         public async Task GetDocumentosFiltrados()
         {
             ValidarParametrosConsulta();
 
             await ActualizarListasDocumentos();
-        }
-
-        private async Task ActualizarListasDocumentos()
-        {
-            ConceptoSQL concepto = await GetConcepto();
-
-            await GetPrimaryDocumentos(concepto);
-
-            await GetSecondaryDocumentos(concepto);
-
-            SepararFaltantes();
-
-            NotificarDocumentosActualizados();
         }
 
         private void ValidarParametrosConsulta()
@@ -104,23 +93,29 @@ namespace Sincronizador.ViewModels
             }
         }
 
-        private async Task GetSecondaryDocumentos(ConceptoSQL concepto)
+        private async Task ActualizarListasDocumentos()
         {
-            using (var secondarySQLDbContext = new ContpaqiSQLContext(_secondaryDbOptions))
-            {
-                var documentos = await secondarySQLDbContext.Documentos
-                    .AsNoTracking()
-                    .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
-                    .ToListAsync();
+            ConceptoSQL concepto = await GetConcepto();
 
-                SecondaryDocumentos.Clear();
-                foreach (var doc in documentos)
-                {
-                    SecondaryDocumentos.Add(doc);
-                }
-            }
+            await GetPrimaryDocumentos(concepto);
+
+            await GetSecondaryDocumentos(concepto);
+
+            SepararFaltantes();
+
+            NotificarDocumentosActualizados();
         }
 
+        private async Task<ConceptoSQL> GetConcepto()
+        {
+            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
+            {
+                return await primarySQLDbContext.Conceptos
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.CCODIGOCONCEPTO == Concepto) ??
+                        throw new KeyNotFoundException("Error, el concepto proporcionado no se encontro en la base de datos.");
+            }
+        }
         private async Task GetPrimaryDocumentos(ConceptoSQL concepto)
         {
             using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
@@ -138,27 +133,22 @@ namespace Sincronizador.ViewModels
             }
         }
 
-        private async Task<ConceptoSQL> GetConcepto()
+        private async Task GetSecondaryDocumentos(ConceptoSQL concepto)
         {
-            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
+            using (var secondarySQLDbContext = new ContpaqiSQLContext(_secondaryDbOptions))
             {
-                return await primarySQLDbContext.Conceptos
+                var documentos = await secondarySQLDbContext.Documentos
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(c => c.CCODIGOCONCEPTO == Concepto) ??
-                        throw new KeyNotFoundException("Error, el concepto proporcionado no se encontro en la base de datos.");
-            }
-        }
-        private async Task<ClienteProveedorSQL> GetClienteProveedor(int idClienteProveedor)
-        {
-            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
-            {
-                return await primarySQLDbContext.ClientesProveedores
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(cp => cp.CIDCLIENTEPROVEEDOR == idClienteProveedor) ??
-                        throw new KeyNotFoundException("Error, el cliente/proveedor proporcionado no se encontro en la base de datos.");
-            }
-        }
+                    .Where(d => d.CFECHA >= FechaInicio && d.CFECHA <= FechaFin && concepto.CIDCONCEPTODOCUMENTO == d.CIDCONCEPTODOCUMENTO)
+                    .ToListAsync();
 
+                SecondaryDocumentos.Clear();
+                foreach (var doc in documentos)
+                {
+                    SecondaryDocumentos.Add(doc);
+                }
+            }
+        }
         private void SepararFaltantes()
         {
             FaltantesEnSecondary.Clear();
@@ -181,21 +171,30 @@ namespace Sincronizador.ViewModels
             OnPropertyChanged(nameof(SecondaryEmpresaName));
         }
 
+        #endregion
+
+        #region PostToSDK
+
         public async Task PostDocumentoToSDK(DocumentoSQL documentoSQL)
         {
             DocumentoDto documentoDto = await BuildDocumentoDto(documentoSQL);
 
-            List<MovimientoDto> movimientoDtos = new (await GetMovimientoDtos(documentoSQL.CIDDOCUMENTO));
+            List<MovimientoDto> movimientoDtos = new(await GetMovimientoDtos(documentoSQL.CIDDOCUMENTO));
 
             await _sdkService.PostDocumentoSDK(documentoDto, movimientoDtos, _targetEmpresa);
 
             await ActualizarListasDocumentos();
         }
 
+        #region BuildDocumentoDto
+
         private async Task<DocumentoDto> BuildDocumentoDto(DocumentoSQL documentoSQL)
         {
-            var concepto = await GetConcepto();
-            var clienteProveedor = await GetClienteProveedor(documentoSQL.CIDCLIENTEPROVEEDOR);
+            ConceptoSQL concepto = await GetConcepto();
+
+            ClienteProveedorSQL clienteProveedorPrimary = await GetClienteProveedorPrimary(documentoSQL);
+
+            ClienteProveedorSQL clienteProveedorSecondary = await GetClienteProveedorSecondary(clienteProveedorPrimary);
 
             DocumentoDto documentoDto = new();
 
@@ -206,7 +205,9 @@ namespace Sincronizador.ViewModels
             documentoDto.CodConcepto = concepto.CCODIGOCONCEPTO;
             documentoDto.Serie = documentoSQL.CSERIEDOCUMENTO;
             documentoDto.Fecha = documentoSQL.CFECHA.ToString("MM/dd/yyyy");
-            documentoDto.CodigoCteProv = clienteProveedor.CCODIGOCLIENTE;
+
+            //buscar el codigo del cliente/proveedor en la base secundaria
+            documentoDto.CodigoCteProv = clienteProveedorSecondary.CCODIGOCLIENTE;
             documentoDto.Referencia = documentoSQL.CREFERENCIA;
             documentoDto.Gasto1 = documentoSQL.CGASTO1;
             documentoDto.Gasto2 = documentoSQL.CGASTO2;
@@ -218,46 +219,96 @@ namespace Sincronizador.ViewModels
 
             return documentoDto;
         }
-
-        private async Task<ProductoSQL> GetProducto(int idProducto)
+        
+        private async Task<ClienteProveedorSQL> GetClienteProveedorPrimary(DocumentoSQL documentoSQL)
         {
             using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
             {
-                return await primarySQLDbContext.Productos
+                return await primarySQLDbContext.ClientesProveedores
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(p => p.CIDPRODUCTO == idProducto) ??
-                        throw new KeyNotFoundException("Error, el producto proporcionado no se encontro en la base de datos.");
+                    .FirstOrDefaultAsync(cp => cp.CIDCLIENTEPROVEEDOR == documentoSQL.CIDCLIENTEPROVEEDOR) ??
+                        throw new KeyNotFoundException($"El documento {documentoSQL.CSERIEDOCUMENTO} {documentoSQL.CFOLIO} pertenece a un cliente proveedor invalido, parece estar corrupto");
             }
         }
+        private async Task<ClienteProveedorSQL> GetClienteProveedorSecondary(ClienteProveedorSQL clienteProveedorPrimary)
+        {
+            using (var secondarySQLDbContext = new ContpaqiSQLContext(_secondaryDbOptions))
+            {
+                return await secondarySQLDbContext.ClientesProveedores
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(cp => cp.CCODIGOCLIENTE == clienteProveedorPrimary.CCODIGOCLIENTE) ??
+                        throw new KeyNotFoundException($"El cliente/proveedor {clienteProveedorPrimary.CRAZONSOCIAL} con codigo {clienteProveedorPrimary.CCODIGOCLIENTE} debe existir tambien en la empresa {_secondaryEmpresaName}.");
+            }
+        }
+
+        #endregion
+
+        #region BuildMovimientosDtos
 
         private async Task<IEnumerable<MovimientoDto>> GetMovimientoDtos(int idDocumento)
         {
             using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
             {
-                var movimientos = await primarySQLDbContext.Movimientos
+                var movimientosPrimary = await primarySQLDbContext.Movimientos
                     .AsNoTracking()
                     .Where(m => m.CIDDOCUMENTO == idDocumento)
                     .ToListAsync();
 
-                List<MovimientoDto> movimientoDtos = new();
+                //search movimientos in secondary db
+                var movimientosSecondary = new List<MovimientoDto>();
 
-                foreach (var movimientoSQL in movimientos)
+                foreach (var movimientoPrimary in movimientosPrimary)
                 {
-                    MovimientoDto movimientoDto = new();
+                    ProductoSQL productoPrimary = await GetProductoPrimary(movimientoPrimary);
+                    ProductoSQL productoSecondary = await GetProductoSecondary(productoPrimary);
 
-                    movimientoDto.CodigoProducto = (await GetProducto(movimientoSQL.CIDPRODUCTO)).CCODIGOPRODUCTO;
-                    movimientoDto.CodigoAlmacen = await GetCodigoAlmacen(movimientoSQL.CIDALMACEN);
-                    movimientoDto.Unidades = movimientoSQL.CUNIDADES;
-                    movimientoDto.Precio = movimientoSQL.CPRECIO;
-                    movimientoDto.Costo = movimientoSQL.CCOSTOCAPTURADO;
-                    movimientoDto.Fecha = movimientoSQL.CFECHA;
-                    movimientoDto.Referencia = movimientoSQL.CREFERENCIA;
-                    movimientoDto.CodigoClasificacion = await GetCodigoClasificacion(movimientoSQL.CIDVALORCLASIFICACION);
+                    MovimientoDto movimientoDto = new()
+                    {
+                        CodigoProducto = productoSecondary.CCODIGOPRODUCTO,
+                        CodigoAlmacen = await GetCodigoAlmacen(movimientoPrimary.CIDALMACEN),
+                        CodigoClasificacion = await GetCodigoClasificacion(movimientoPrimary.CIDVALORCLASIFICACION),
+                        Unidades = movimientoPrimary.CUNIDADES,
+                        Precio = movimientoPrimary.CPRECIOCAPTURADO,
+                        Costo = movimientoPrimary.CCOSTOCAPTURADO,
+                        Fecha = movimientoPrimary.CFECHA,
+                        Referencia = movimientoPrimary.CREFERENCIA
+                    };
 
-                    movimientoDtos.Add(movimientoDto);
+                    movimientosSecondary.Add(movimientoDto);
                 }
 
-                return movimientoDtos;
+                return movimientosSecondary;
+            }
+        }
+
+        private async Task<ProductoSQL> GetProductoPrimary(MovimientoSQL movimientoSQl)
+        {
+            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
+            {
+                return await primarySQLDbContext.Productos
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.CIDPRODUCTO == movimientoSQl.CIDPRODUCTO) ??
+                        throw new KeyNotFoundException($"Un Movimiento contenia un producto invalido, parece que el documento primario esta corrupto(idDocumento: {movimientoSQl.CIDDOCUMENTO})");
+            }
+        }
+
+        private async Task<ProductoSQL> GetProductoSecondary(ProductoSQL productoPrimary)
+        {
+            using (var secondarySQLDbContext = new ContpaqiSQLContext(_secondaryDbOptions))
+            {
+                return await secondarySQLDbContext.Productos
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.CCODIGOPRODUCTO == productoPrimary.CCODIGOPRODUCTO) ??
+                        throw new KeyNotFoundException($"El producto {productoPrimary.CNOMBREPRODUCTO} con codigo {productoPrimary.CCODIGOPRODUCTO} debe existir tambien en la empresa {_secondaryEmpresaName}.");
+            }
+        }
+        private async Task<string> GetCodigoAlmacen(int idAlmacen)
+        {
+            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
+            {
+                return await primarySQLDbContext.Database
+                    .SqlQuery<string>($"SELECT TOP 1 CCODIGOALMACEN AS Value FROM admAlmacenes WHERE CIDALMACEN = {idAlmacen}")
+                    .SingleOrDefaultAsync() ?? "1";
             }
         }
 
@@ -271,14 +322,8 @@ namespace Sincronizador.ViewModels
             }
         }
 
-        private async Task<string> GetCodigoAlmacen(int idAlmacen)
-        {
-            using (var primarySQLDbContext = new ContpaqiSQLContext(_primaryDbOptions))
-            {
-                return await primarySQLDbContext.Database
-                    .SqlQuery<string>($"SELECT TOP 1 CCODIGOALMACEN AS Value FROM admAlmacenes WHERE CIDALMACEN = {idAlmacen}")
-                    .SingleOrDefaultAsync() ?? "1";
-            }
-        }
+        #endregion
+
+        #endregion
     }
 }
