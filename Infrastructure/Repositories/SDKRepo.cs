@@ -16,9 +16,9 @@ namespace Infrastructure.Repositories
         private string _user;
         private string _password;
         private string _dirBinarios;
-        private bool _transactionInProgress;
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        private readonly ILogger _logger;
+        private readonly ILogger _logger; // TODO: use real logging wich means attaching the mirosoft and use Debug.wl or Trace.wl
 
         public SDKRepo(SDKSettings sDKSettings, ILogger logger)
         {
@@ -28,7 +28,6 @@ namespace Infrastructure.Repositories
             _user = sDKSettings.User;
             _password = sDKSettings.Password;
             _dirBinarios = sDKSettings.RutaBinarios;
-            _transactionInProgress = false;
             _logger = logger;
         }
 
@@ -128,51 +127,54 @@ namespace Infrastructure.Repositories
         {
             await Task.Run(() =>
             {
-                if (_transactionInProgress)
-                    SDK.fCierraEmpresa();
                 SDK.fTerminaSDK();
             });
         }
 
-        public async Task<bool> StartTransaction(string empresa)
+        public async Task StartTransaction(string empresa)
         {
-            if (_transactionInProgress)
-                return false;
-            int attempts = 0;
-            int lError;
-            return await Task.Run(() =>
+            await _semaphore.WaitAsync();
+
+            try
             {
-                while (true)
+                int attempts = 0;
+                int lError;
+                await Task.Run(() =>
                 {
-                    //si empresa es test, se abre la empresa default, solo para el caso de uso testSDK
-                    lError = SDK.fAbreEmpresa(_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa));
-                    if (lError != 0)
+                    while (true)
                     {
-                        Thread.Sleep(500);
-                        if (++attempts > 4)
+                        //si empresa es test, se abre la empresa default, solo para el caso de uso testSDK
+                        lError = SDK.fAbreEmpresa(_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa));
+                        if (lError != 0)
                         {
-                            throw new SDKException($"No se pudo abrir la empresa: {_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa)}, Directortio actual: {Directory.GetCurrentDirectory()} ({lError}): ", lError);
+                            Thread.Sleep(500);
+                            if (++attempts > 4)
+                            {
+                                throw new SDKException($"No se pudo abrir la empresa: {_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa)}, Directortio actual: {Directory.GetCurrentDirectory()} ({lError}): ", lError);
+                            }
+                            Thread.Sleep(500);
                         }
-                        Thread.Sleep(500);
+                        else
+                        {
+                            _logger.Log($"Empresa: {empresa} abierta con exito, transaccion iniciada");
+                        }
                     }
-                    else
-                    {
-                        _transactionInProgress = true;
-                        _logger.Log($"Empresa: {empresa} abierta con exito, transaccion iniciada");
-                        return true;
-                    }
-                }
-            });
+                });
+            }
+            catch
+            {
+                _semaphore.Release();
+                throw;
+            }
         }
 
         public void StopTransaction()
         {
-            if (_transactionInProgress)
-            {
-                _transactionInProgress = false;
-                SDK.fCierraEmpresa();
-                _logger.Log("Transacción finalizada con éxito.");
-            }
+            SDK.fCierraEmpresa();
+
+            _semaphore.Release();
+
+            _logger.Log("Transacción finalizada con éxito.");
         }
 
         #endregion
@@ -182,10 +184,6 @@ namespace Infrastructure.Repositories
         public async Task<Dictionary<int, double>> AddDocumento(DocumentoDto documentoDto)
         {
             int idDocumento = 0;
-            if (!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
 
             return await Task.Run(() =>
             {

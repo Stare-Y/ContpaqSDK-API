@@ -2,57 +2,44 @@
 using Core.Domain.Exceptions;
 using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
+using System.Diagnostics;
 namespace Core.Application.UseCases.SDK
 {
     public class AddDocumentoYMovimientosSDKUseCase
     {
         private readonly ISDKRepo _sdkRepo;
-        private readonly ILogger _logger;
 
         public AddDocumentoYMovimientosSDKUseCase(ISDKRepo sDKRepo, ILogger logger)
         {
-            _logger = logger;
             _sdkRepo = sDKRepo;
         }
 
         public async Task<Dictionary<int, double>> Execute(DocumentoDto documentoDto, IEnumerable<MovimientoDto> movimientoDtos, string empresa)
         {
-            _logger.Log("Ejecutando caso de uso AddDocumentoYMovimientosSDK...");
+            Trace.WriteLine("Ejecutando caso de uso AddDocumentoYMovimientosSDK...");
 
-            while (true)
+            await _sdkRepo.StartTransaction(empresa);
+            
+            Dictionary<int, double> addDocumentResult = new();
+            try
             {
-                var canWork = await _sdkRepo.StartTransaction(empresa);
-                if (canWork)
+                addDocumentResult = await _sdkRepo.AddDocumento(documentoDto);
+                int idDocumento = addDocumentResult.Keys.First();
+
+                foreach (var movimiento in movimientoDtos)
                 {
-                    Dictionary<int, double> addDocumentResult = new();
-                    try
-                    {
-                        addDocumentResult = await _sdkRepo.AddDocumento(documentoDto);
-                    }
-                    catch(SDKException ex)
-                    {
-                        _sdkRepo.StopTransaction();
-                        throw new Exception(ex.Message);
-                    }
-
-                    int idDocumento = addDocumentResult.Keys.First();
-
-                    foreach (var movimiento in movimientoDtos)
-                    {
-                        await _sdkRepo.AddMovimiento(movimiento, idDocumento);
-                    }
-
-                    _sdkRepo.StopTransaction();
-
-                    _logger.Log($"Se genero un nuevo documento para la empresa {empresa}. Id SQL: {idDocumento}, Serie: {documentoDto.Serie}, Folio: {addDocumentResult[idDocumento]}. ");
-
-                    return addDocumentResult;
+                    await _sdkRepo.AddMovimiento(movimiento, idDocumento);
                 }
-                else
-                {
-                    _logger.Log("SDK Ocupado, esperando turno para AddDocumentoYMovimientosSDK...");
-                    await Task.Delay(1000);
-                }
+
+                _sdkRepo.StopTransaction();
+
+                Trace.WriteLine($"Se genero un nuevo documento para la empresa {empresa}. Id SQL: {idDocumento}, Serie: {documentoDto.Serie}, Folio: {addDocumentResult[idDocumento]}. ");
+
+                return addDocumentResult;
+            }
+            finally
+            {
+                _sdkRepo.StopTransaction();
             }
         }
     }

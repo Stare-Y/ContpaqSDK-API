@@ -77,7 +77,7 @@ namespace Core.Domain.Interfaces.Repositories
         /// Is required to do anything, to open the empresa in contpaqi
         /// </summary>
         /// <returns></returns>
-        Task<bool> StartTransaction(string empresa);
+        Task StartTransaction(string empresa);
 
         /// <summary>
         /// Ends the transaction to release resources.
