@@ -1,11 +1,10 @@
-﻿using Domain.SDK_Comercial;
-using System.Text;
+﻿using Core.Domain.Entities.DTOs;
 using Core.Domain.Entities.SDK.Estructuras;
-using Core.Domain.Interfaces.Services;
 using Core.Domain.Exceptions;
-using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories;
-using System.Diagnostics;
+using Core.Domain.Interfaces.Services;
+using Domain.SDK_Comercial;
+using System.Text;
 
 namespace Infrastructure.Repositories
 {
@@ -141,7 +140,6 @@ namespace Infrastructure.Repositories
                     lError = SDK.fAbreEmpresa(_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa));
                     if (lError != 0)
                     {
-                        Thread.Sleep(500);
                         if (++attempts > 4)
                         {
                             throw new SDKException($"No se pudo abrir la empresa: {_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa)}, Directortio actual: {Directory.GetCurrentDirectory()} ({lError}): ", lError);

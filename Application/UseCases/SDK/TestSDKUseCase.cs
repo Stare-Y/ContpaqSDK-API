@@ -1,7 +1,6 @@
 ﻿using Core.Domain.Exceptions;
 using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
-using System.Diagnostics;
 
 namespace Core.Application.UseCases.SDK
 {
@@ -27,8 +26,6 @@ namespace Core.Application.UseCases.SDK
             try
             {
                 await _sdkRepo.StartTransaction("test");
-
-                await Task.Delay(500);
 
                 await _logger.Log("Transacción de prueba iniciada con éxito.");
 

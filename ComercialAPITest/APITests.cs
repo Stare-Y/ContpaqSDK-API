@@ -1,6 +1,5 @@
 using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Services.ApiServices.SDK;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComercialAPITest
