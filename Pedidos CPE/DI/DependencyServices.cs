@@ -58,20 +58,19 @@ namespace Pedidos_CPE.DI
 
         private static void InjectLogging(IServiceCollection services)
         {
-            var logFilePath = "C:\\Stare-y\\ContpaqSDK-API\\log.txt";
-            var directoryPath = Path.GetDirectoryName(logFilePath) ?? throw new Exception("Directory path is null");
+            var logFilePath = Path.Combine(AppContext.BaseDirectory, "log");
 
             // Crea el directorio si no existe
-            if (!Directory.Exists(directoryPath))
+            if (!Directory.Exists(logFilePath))
             {
-                if (string.IsNullOrEmpty(directoryPath))
+                if (string.IsNullOrEmpty(logFilePath))
                 {
                     throw new Exception("Directory path is empty");
                 }
-                Directory.CreateDirectory(directoryPath);
+                Directory.CreateDirectory(logFilePath);
             }
 
-            var logger = new Logger(logFilePath);
+            var logger = new Logger(Path.Combine(logFilePath, "log.txt"));
 
             // Add services to the container.
             services.AddSingleton<Core.Domain.Interfaces.Services.ILogger>(provider => logger);

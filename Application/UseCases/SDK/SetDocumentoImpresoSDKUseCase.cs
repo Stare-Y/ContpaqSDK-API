@@ -1,6 +1,5 @@
 ﻿using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
-using System.Diagnostics;
 
 namespace Core.Application.UseCases.SDK
 {
