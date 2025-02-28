@@ -112,7 +112,6 @@ namespace Pedidos_CPE.DI
         {
             services.AddSingleton<ISDKRepo, SDKRepo>();
 
-            //use cases
             services.AddTransient<AddDocumentoYMovimientosSDKUseCase>();
             services.AddTransient<TestSDKUseCase>();
             services.AddTransient<SetDocumentoImpresoSDKUseCase>();

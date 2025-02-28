@@ -151,6 +151,7 @@ namespace Infrastructure.Repositories
                     else
                     {
                         _logger.Log($"Empresa: {empresa} abierta con exito, transaccion iniciada");
+                        return;
                     }
                 }
             });

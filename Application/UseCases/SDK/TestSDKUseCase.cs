@@ -28,17 +28,17 @@ namespace Core.Application.UseCases.SDK
             {
                 await _sdkRepo.StartTransaction("test");
 
+                await Task.Delay(500);
+
                 _logger.Log("Transacción de prueba iniciada con éxito.");
-
-                _sdkRepo.StopTransaction();
-
-                _logger.Log("Transacción de prueba finalizada con éxito.");
 
                 return;
             }
             finally
             {
                 _sdkRepo.StopTransaction();
+
+                _logger.Log("Transacción de prueba finalizada con éxito.");
             }
         }
     }

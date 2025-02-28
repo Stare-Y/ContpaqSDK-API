@@ -1,3 +1,4 @@
+using Core.Domain.Interfaces.Repositories;
 using Infrastructure.Repositories;
 using Pedidos_CPE.DI;
 
@@ -26,12 +27,12 @@ if (app.Environment.IsDevelopment())
 //start the SDK
 using (var scope = app.Services.CreateScope())
 {
-    SDKRepo sdkRepo = scope.ServiceProvider.GetRequiredService<SDKRepo>();
+    ISDKRepo sdkRepo = scope.ServiceProvider.GetRequiredService<ISDKRepo>();
     //get a logger instance
     var logger = scope.ServiceProvider.GetRequiredService<Core.Domain.Interfaces.Services.ILogger>();
     try
     {
-        await sdkRepo.InicializarSDKAsync();
+        sdkRepo.InicializarSDK();
     }
     catch (Exception e)
     {
