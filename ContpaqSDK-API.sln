@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PedidosCPE", "PedidosCPE\Pe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sincronizador", "Sincronizador\Sincronizador.csproj", "{EEC6B653-B8A0-41F8-9120-1AAB8069DEAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComercialAPITest", "ComercialAPITest\ComercialAPITest.csproj", "{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,18 @@ Global
 		{EEC6B653-B8A0-41F8-9120-1AAB8069DEAE}.Release|x64.Build.0 = Release|Any CPU
 		{EEC6B653-B8A0-41F8-9120-1AAB8069DEAE}.Release|x86.ActiveCfg = Release|Any CPU
 		{EEC6B653-B8A0-41F8-9120-1AAB8069DEAE}.Release|x86.Build.0 = Release|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Debug|x64.Build.0 = Debug|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Debug|x86.Build.0 = Debug|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|x64.ActiveCfg = Release|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|x64.Build.0 = Release|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|x86.ActiveCfg = Release|Any CPU
+		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

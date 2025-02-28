@@ -1,10 +1,7 @@
-﻿using Core.Domain.Entities;
-using Core.Domain.Interfaces.Services.ApiServices;
-using Core.Domain.Interfaces.Services.ApiServices.Documentos;
+﻿using Core.Domain.Interfaces.Services.ApiServices;
 using Core.Domain.Interfaces.Services.ApiServices.SDK;
 using Infrastructure.Context;
 using Infrastructure.Services.API;
-using Infrastructure.Services.API.Documentos;
 using Infrastructure.Services.API.SDK;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -48,5 +48,12 @@ namespace Infrastructure.Services.API.SDK
 
             return documentoCreado ?? throw new Exception("Error al crear documento en SDK, la instancia de respuesta fue nula.");
         }
+
+        public async Task<bool> IsSDKGood()
+        {
+            var response = await _apiService.GetAsync<ApiResponse>("SDK/isGood");
+
+            return response.Success;
+        }
     }
 }

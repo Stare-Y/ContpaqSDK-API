@@ -27,5 +27,7 @@ namespace Core.Domain.Interfaces.Services.ApiServices.SDK
         /// <param name="movements"></param>
         /// <returns>Diccionario con id de sql y folio</returns>
         Task<Dictionary<int, double>> PostDocumentoSDK(DocumentoDto document, IEnumerable<MovimientoDto> movements, string empresa);
+
+        Task<bool> IsSDKGood();
     }
 }
