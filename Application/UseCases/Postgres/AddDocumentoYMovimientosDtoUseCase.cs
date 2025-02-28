@@ -25,11 +25,11 @@ namespace Core.Application.UseCases.Postgres
 
         public async Task<DocumentoDto> Execute(DocumentoDto documentoDto, List<MovimientoDto> movimientoDtos)
         {
-            _logger.Log("Ejecutando caso de uso AddDocumentoYMovimientosDto...");
+            await _logger.Log("Ejecutando caso de uso AddDocumentoYMovimientosDto...");
 
             var addedDocument = await _documentoDtoRepo.AddAsync(documentoDto);
 
-            _logger.Log($"Documento agregado a postgres con éxito. ID: {addedDocument.IdPostgres}");
+            await _logger.Log($"Documento agregado a postgres con éxito. ID: {addedDocument.IdPostgres}");
 
             foreach (var movimiento in movimientoDtos)
             {
@@ -37,7 +37,7 @@ namespace Core.Application.UseCases.Postgres
                 await _movimientoDtoRepo.AddAsync(movimiento);
             }
 
-            _logger.Log($"Se agregaron {movimientoDtos.Count} movimientos para el documento {addedDocument.IdPostgres}");
+            await _logger.Log($"Se agregaron {movimientoDtos.Count} movimientos para el documento {addedDocument.IdPostgres}");
 
             return addedDocument;
         }

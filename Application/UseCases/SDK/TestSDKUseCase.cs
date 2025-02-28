@@ -22,7 +22,7 @@ namespace Core.Application.UseCases.SDK
         /// <exception cref="SDKException"></exception>
         public async Task Execute()
         {
-            _logger.Log("Ejecutando caso de uso TestSDKUseCase...");
+            await _logger.Log("Ejecutando caso de uso TestSDKUseCase...");
 
             try
             {
@@ -30,7 +30,7 @@ namespace Core.Application.UseCases.SDK
 
                 await Task.Delay(500);
 
-                _logger.Log("Transacción de prueba iniciada con éxito.");
+                await _logger.Log("Transacción de prueba iniciada con éxito.");
 
                 return;
             }
@@ -38,7 +38,7 @@ namespace Core.Application.UseCases.SDK
             {
                 _sdkRepo.StopTransaction();
 
-                _logger.Log("Transacción de prueba finalizada con éxito.");
+                await _logger.Log("Transacción de prueba finalizada con éxito.");
             }
         }
     }

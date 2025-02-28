@@ -21,11 +21,11 @@ namespace Core.Application.UseCases.SQL.Productos
         /// <returns></returns>
         public async Task<IEnumerable<ProductoDto>> Execute()
         {
-            _logger.Log("Ejecutando el caso de uso GetAllProductsSQL...");
+            await _logger.Log("Ejecutando el caso de uso GetAllProductsSQL...");
 
             var productos = await _productoSQLRepo.GetAllAsync();
 
-            _logger.Log("Productos obtenidos exitosamente");
+            await _logger.Log("Productos obtenidos exitosamente");
 
             return productos.Select(p => new ProductoDto(p));
         }

@@ -17,7 +17,7 @@ namespace Core.Application.UseCases.SQL.ClienteProveedor
 
         public async Task<IEnumerable<ClienteProveedorDto>> Execute(string name)
         {
-            _logger.Log($"Buscando clientes/proveedores similares a: {name}");
+            await _logger.Log($"Buscando clientes/proveedores similares a: {name}");
 
             var clientesProveedores = await _clienteProveedorSQLRepo.SearchByName(name);
 

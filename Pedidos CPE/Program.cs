@@ -36,7 +36,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception e)
     {
-        logger.Log(e.Message);
+        await logger.Log(e.Message);
         throw;
     }
 }

@@ -15,14 +15,14 @@ namespace Core.Application.UseCases.SDK
 
         public async Task Execute(int idDocumento, string empresa)
         {
-            _logger.Log("Ejecutando caso de uso SetDocumentoImpresoSDK...");
+            await _logger.Log("Ejecutando caso de uso SetDocumentoImpresoSDK...");
             try
             {
                 await _sdkRepo.StartTransaction(empresa);
                 
                 await _sdkRepo.SetImpreso(idDocumento, true);
 
-                _logger.Log($"Documento {idDocumento}, establecido como impreso");
+                await _logger.Log($"Documento {idDocumento}, establecido como impreso");
 
                 return;
             }

@@ -1,11 +1,6 @@
 ﻿using Core.Domain.Entities.SQL;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Application.UseCases.SQL.Documentos
 {
@@ -27,12 +22,12 @@ namespace Core.Application.UseCases.SQL.Documentos
         /// <param name="fechaFin"></param>
         public async Task<IEnumerable<DocumentoSQL>> Execute(int idCliente, DateTime fechaInicio, DateTime fechaFin)
         {
-            _logger.Log("Ejecutando caso de uso GetDocumentosByIdClienteAndDateSQLUseCase...");
+            await _logger.Log("Ejecutando caso de uso GetDocumentosByIdClienteAndDateSQLUseCase...");
 
             var documentos = await _documentoSQLRepo.GetByIdClienteAndDateAsync(idCliente, fechaInicio, fechaFin);
 
 
-            _logger.Log($"Se encontraron {documentos.Count()} documentos para el cliente {idCliente} entre las fechas: {fechaInicio} y {fechaFin}");
+            await _logger.Log($"Se encontraron {documentos.Count()} documentos para el cliente {idCliente} entre las fechas: {fechaInicio} y {fechaFin}");
 
             return documentos;
         }

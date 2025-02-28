@@ -17,14 +17,14 @@ namespace Core.Application.UseCases.Postgres.Movimientos
 
         public async Task Execute(List<MovimientoDto> movimientos)
         {
-            _logger.Log("Ejecutando caso de uso UpdateMovimientosUseCase...");
+            await _logger.Log("Ejecutando caso de uso UpdateMovimientosUseCase...");
 
             foreach (var movimiento in movimientos)
             {
                 await _movimientoRepo.UpdateAsync(movimiento);
             }
 
-            _logger.Log($"Unidades de movimientos actualizados con éxito.");
+            await _logger.Log($"Unidades de movimientos actualizados con éxito.");
         }
     }
 }

@@ -1,11 +1,6 @@
 ﻿using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories.SQL;
 using Core.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Application.UseCases.SQL.Productos
 {
@@ -26,7 +21,7 @@ namespace Core.Application.UseCases.SQL.Productos
         /// <param name="codigoProducto"></param>
         public async Task<IEnumerable<ProductoDto>> Execute(IEnumerable<string> codigos)
         {
-            _logger.Log($"Obteniendo solicitud de buscar productos por lista de codigos, codigos: {codigos.Count()}");
+            await _logger.Log($"Obteniendo solicitud de buscar productos por lista de codigos, codigos: {codigos.Count()}");
 
             List<ProductoDto> productos = new List<ProductoDto>();
 

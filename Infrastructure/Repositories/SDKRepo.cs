@@ -37,12 +37,12 @@ namespace Infrastructure.Repositories
 
         public async Task InicializarSDKAsync()
         {
-            _logger.Log("Iniciando la inicialización del SDK.");
+            await _logger.Log("Iniciando la inicialización del SDK.");
 
             // Mueve la inicialización a una tarea
             await Task.Run(() => InicializarSDK());
 
-            _logger.Log("Inicializacion del SDK Exitosa, esperando instrucciones");
+            await _logger.Log("Inicializacion del SDK Exitosa, esperando instrucciones");
         }
 
         public void InicializarSDK()

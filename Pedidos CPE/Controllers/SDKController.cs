@@ -42,7 +42,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al agregar documento y movimientos a SDK: {ex.Message}");
+                await _logger.Log($"Error al agregar documento y movimientos a SDK: {ex.Message}");
                 return BadRequest(new ApiResponse { Success = false, Message = "No se pudo agregar el documento, y/o los movimientos al SDK ", ErrorDetails = ex.Message });
             }
         }
@@ -59,7 +59,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al establecer el documento {idDocumento} como impreso: {ex.Message}");
+                await _logger.Log($"Error al establecer el documento {idDocumento} como impreso: {ex.Message}");
                 return BadRequest(new ApiResponse { Success = false, Message = $"No se pudo establecer el documento: {idDocumento} como impreso ", ErrorDetails = ex.Message });
             }
         }
@@ -75,7 +75,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al obtener existencias del SDK: {ex.Message}");
+                await _logger.Log($"Error al obtener existencias del SDK: {ex.Message}");
                 return BadRequest(new ApiResponse { Success = false, Message = "No se pudo obtener las existencias del SDK ", ErrorDetails = ex.Message });
             }
         }
@@ -91,7 +91,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al probar el SDK: {ex.Message}");
+                await _logger.Log($"Error al probar el SDK: {ex.Message}");
                 return BadRequest(new ApiResponse { Success = false, Message = "Parece que el SDK no esta funcionando correctamente :c ", ErrorDetails = ex.Message });
             }
         }

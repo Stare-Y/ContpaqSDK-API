@@ -21,7 +21,7 @@ namespace Core.Application.UseCases.SQL.Productos
         /// <param name="idProducto"></param>
         public async Task<ProductoDto> Execute(int idProducto)
         {
-            _logger.Log($"Obteniendo solicitud de buscar el producto con id: {idProducto}");
+            await _logger.Log($"Obteniendo solicitud de buscar el producto con id: {idProducto}");
             return new ProductoDto(await _productoSQLRepo.GetByIdAsync(idProducto));
         }
     }

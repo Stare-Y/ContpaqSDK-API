@@ -21,7 +21,7 @@ namespace Core.Application.UseCases.SQL.Productos
         /// <param name="name"></param>
         public async Task<IEnumerable<ProductoDto>> Execute(string name)
         {
-            _logger.Log($"Obteniendo solicitud de buscar el producto con nombre: {name}");
+            await _logger.Log($"Obteniendo solicitud de buscar el producto con nombre: {name}");
 
             var productosSQL = await _productoSQLRepo.SearchByNameAsync(name);
 

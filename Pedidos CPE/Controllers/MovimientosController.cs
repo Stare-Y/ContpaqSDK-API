@@ -44,7 +44,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error obteniendo los movimientos del documento {documentoId}: " + ex.Message + ex.StackTrace);
+                await _logger.Log($"Error obteniendo los movimientos del documento {documentoId}: " + ex.Message + ex.StackTrace);
                 return BadRequest(new ApiResponse { Message = $"Error obteniendo los movimientos del documento {documentoId}. ", Success = false, ErrorDetails = ex.Message });
             }
         }

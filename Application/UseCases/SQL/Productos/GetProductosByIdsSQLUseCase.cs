@@ -21,7 +21,7 @@ namespace Core.Application.UseCases.SQL.Productos
         /// <param name="ids"></param>
         public async Task<IEnumerable<ProductoDto>> Execute(List<int> ids)
         {
-            _logger.Log("Ejecutando caso de uso GetProductosByIdsCPESQL...");
+            await _logger.Log("Ejecutando caso de uso GetProductosByIdsCPESQL...");
 
             var productos = await _productoSQLRepo.GetByIdsAsync(ids);
 

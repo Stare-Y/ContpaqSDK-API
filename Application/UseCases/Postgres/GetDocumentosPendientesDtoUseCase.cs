@@ -17,11 +17,11 @@ namespace Core.Application.UseCases.Postgres
 
         public async Task<IEnumerable<DocumentoDto>> Execute()
         {
-            _logger.Log("Obteniendo documentos pendientes de Postgres");
+            await _logger.Log("Obteniendo documentos pendientes de Postgres");
 
             var documentos = await _documentoDtoRepo.GetPendientesAsync();
 
-            _logger.Log($"Se obtuvieron {documentos.Count()} documentos pendientes");
+            await _logger.Log($"Se obtuvieron {documentos.Count()} documentos pendientes");
 
             return documentos;
         }

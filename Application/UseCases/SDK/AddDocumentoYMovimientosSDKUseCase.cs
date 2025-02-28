@@ -17,7 +17,7 @@ namespace Core.Application.UseCases.SDK
 
         public async Task<Dictionary<int, double>> Execute(DocumentoDto documentoDto, IEnumerable<MovimientoDto> movimientoDtos, string empresa)
         {
-            _logger.Log("Ejecutando caso de uso AddDocumentoYMovimientosSDK...");
+            await _logger.Log("Ejecutando caso de uso AddDocumentoYMovimientosSDK...");
             
             try
             {
@@ -33,7 +33,7 @@ namespace Core.Application.UseCases.SDK
                     await _sdkRepo.AddMovimiento(movimiento, idDocumento);
                 }
 
-                _logger.Log($"Se genero un nuevo documento para la empresa {empresa}. Id SQL: {idDocumento}, Serie: {documentoDto.Serie}, Folio: {addDocumentResult[idDocumento]}. ");
+                await _logger.Log($"Se genero un nuevo documento para la empresa {empresa}. Id SQL: {idDocumento}, Serie: {documentoDto.Serie}, Folio: {addDocumentResult[idDocumento]}. ");
 
                 return addDocumentResult;
             }

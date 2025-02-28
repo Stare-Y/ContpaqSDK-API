@@ -45,7 +45,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al agregar documento y movimientos a Postgres: {ex.Message} (Inner: {ex.InnerException})");
+                await _logger.Log($"Error al agregar documento y movimientos a Postgres: {ex.Message} (Inner: {ex.InnerException})");
                 return BadRequest(new ApiResponse { Message = "Hubo un problema al agregar el documento y/o los movimientos ", Success = false, ErrorDetails = ex.Message});
             }
         }
@@ -61,7 +61,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al obtener documentos pendientes de Postgres: {ex.Message}");
+                await _logger.Log($"Error al obtener documentos pendientes de Postgres: {ex.Message}");
                 return BadRequest(new ApiResponse { Message = "Hubo un problema obteniendo los documentos pendientes ", Success = false, ErrorDetails = ex.Message });
             }
         }
@@ -77,7 +77,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al actualizar documento pendiente en Postgres: {ex.Message}");
+                await _logger.Log($"Error al actualizar documento pendiente en Postgres: {ex.Message}");
                 return BadRequest(new ApiResponse { Message = "Hubo un problema al actualizar el documento pendiente ", Success = false, ErrorDetails = ex.Message });
             }
         }
@@ -93,7 +93,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log($"Error al obtener documentos pendientes de SQL: {ex.Message}");
+                await _logger.Log($"Error al obtener documentos pendientes de SQL: {ex.Message}");
                 return BadRequest(new ApiResponse { Message = "Hubo un problema al obtener los documentos pendientes ", Success = false, ErrorDetails = ex.Message });
             }
         }
