@@ -1,11 +1,4 @@
 ﻿using Core.Domain.Entities.SDK.Estructuras;
-using Core.Domain.Entities.SQL;
-using Domain.SDK_Comercial;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Domain.Entities.DTOs
 {

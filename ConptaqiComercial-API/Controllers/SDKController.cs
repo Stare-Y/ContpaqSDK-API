@@ -2,7 +2,6 @@
 using Core.Application.UseCases.SDK.Requests;
 using Core.Domain.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace Pedidos_CPE.Controllers
 {
