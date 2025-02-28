@@ -1,12 +1,6 @@
 ﻿using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories.DTOs;
 using Core.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Application.UseCases.Postgres
 {

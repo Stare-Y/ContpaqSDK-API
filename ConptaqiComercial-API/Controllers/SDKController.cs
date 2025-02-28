@@ -66,11 +66,11 @@ namespace Pedidos_CPE.Controllers
 
         [HttpGet]
         [Route("/SDK/getExistencias")]
-        public async Task<ActionResult<ApiResponse>> GetExistenciasSDK([FromQuery] string codigoProducto, [FromQuery] string codigoAlmacen, [FromQuery] DateTime fecha)
+        public async Task<ActionResult<ApiResponse>> GetExistenciasSDK([FromQuery] string codigoProducto, [FromQuery] string codigoAlmacen, [FromQuery] DateTime fecha, [FromQuery] string empresa)
         {
             try
             {
-                double existencias = await _getExistenciasSDK.Execute(codigoProducto, codigoAlmacen, fecha);
+                double existencias = await _getExistenciasSDK.Execute(codigoProducto, codigoAlmacen, fecha, empresa);
                 return Ok(new ApiResponse { Message = $"Se encontraron {existencias} para el producto {codigoProducto} en el almacen {codigoAlmacen}", Data = existencias, Success = true });
             }
             catch (Exception ex)

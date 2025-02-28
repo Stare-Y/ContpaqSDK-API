@@ -1,7 +1,6 @@
 ﻿using Core.Application.UseCases.SQL.Productos;
 using Core.Domain.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Pedidos_CPE.Controllers
 {

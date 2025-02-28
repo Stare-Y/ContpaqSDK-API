@@ -1,6 +1,5 @@
 ﻿using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
-using System.Diagnostics;
 
 namespace Core.Application.UseCases.SDK
 {
@@ -16,12 +15,12 @@ namespace Core.Application.UseCases.SDK
             _logger = logger;
         }
 
-        public async Task<double> Execute(string codigoProducto, string codigoAlmacen, DateTime fecha)
+        public async Task<double> Execute(string codigoProducto, string codigoAlmacen, DateTime fecha, string empresa)
         {
             await _logger.Log("Ejecutando caso de uso GetExistenciasSDKUseCase...");
             try
             {
-                 await _sdkRepo.StartTransaction("test");
+                 await _sdkRepo.StartTransaction(empresa);
                
                 double existencias = await _sdkRepo.GetExistencias(codigoProducto,codigoAlmacen, fecha);
 
