@@ -21,7 +21,7 @@ namespace ComercialAPITest
             services.AddHttpClient<IApiService, ApiService>("CommonHttpClient", client =>
             {
                 client.BaseAddress = new Uri(API_SERVER_URI ?? throw new InvalidDataException("ServerUri de settings.json es nulo"));
-                client.Timeout = TimeSpan.FromSeconds(20);
+                client.Timeout = TimeSpan.FromSeconds(40);
             });
         }
 
