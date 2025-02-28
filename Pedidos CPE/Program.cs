@@ -1,29 +1,22 @@
-using Core.Domain.Interfaces.Repositories.SQL;
 using Infrastructure.Repositories;
-using Infrastructure.Repositories.SQL;
 using Pedidos_CPE.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// this is so we can install it as a windows service
 builder.Host.UseWindowsService();
 
 // Add services to the container.
-builder = DependencyServices.ConfigureServices(builder);
+DependencyServices.ConfigureServices(builder.Services);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 app.UseCors("AllowAll");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsProduction())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

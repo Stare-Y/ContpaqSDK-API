@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Core.Application.UseCases.Postgres;
+﻿using Core.Application.UseCases.Postgres;
 using Core.Application.UseCases.Postgres.Movimientos;
 using Core.Application.UseCases.SDK;
 using Core.Application.UseCases.SQL.ClienteProveedor;
@@ -15,19 +14,50 @@ using Infrastructure.Repositories.Postgres;
 using Infrastructure.Repositories.SQL;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Pedidos_CPE.DI
 {
     public static class DependencyServices
     {
-        public static WebApplicationBuilder ConfigureServices(WebApplicationBuilder builder)
+        public static void ConfigureServices(IServiceCollection services)
         {
 
             //builder.Host.UseWindowsService();
             //builder.Services.AddWindowsService();//to use it as a windows service
 
             var sdkSettings = LoadSettings();
+            
+            services.AddSingleton<SDKSettings>(provider => sdkSettings);
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
 
+            InjectLogging(services);
+
+            InjectDbContexts(services, sdkSettings);
+
+            InjectContpaqiSDK(services);
+
+
+            InjectRepos(services);
+
+            InjectSQLServices(services);
+
+            InjectPostgresServices(services);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+        }
+
+        private static void InjectLogging(IServiceCollection services)
+        {
             var logFilePath = "C:\\Stare-y\\ContpaqSDK-API\\log.txt";
             var directoryPath = Path.GetDirectoryName(logFilePath) ?? throw new Exception("Directory path is null");
 
@@ -44,13 +74,12 @@ namespace Pedidos_CPE.DI
             var logger = new Logger(logFilePath);
 
             // Add services to the container.
-            builder.Services.AddSingleton<Core.Domain.Interfaces.Services.ILogger>(provider => logger);
-            builder.Services.AddSingleton<SDKSettings>(provider => sdkSettings);
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            services.AddSingleton<Core.Domain.Interfaces.Services.ILogger>(provider => logger);
+        }
 
-            //Repositories
-            builder.Services.AddDbContext<ContpaqiSQLContext>(options =>
+        private static void InjectDbContexts(IServiceCollection services, SDKSettings sdkSettings)
+        {
+            services.AddDbContext<ContpaqiSQLContext>(options =>
             {
                 options.UseSqlServer(sdkSettings.SQLConnectionString,
                     sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
@@ -58,7 +87,8 @@ namespace Pedidos_CPE.DI
                         maxRetryDelay: TimeSpan.FromSeconds(5),
                         errorNumbersToAdd: null));
             });
-            builder.Services.AddDbContext<PostgresCPEContext>(options =>
+
+            services.AddDbContext<PostgresCPEContext>(options =>
             {
                 options.UseNpgsql(sdkSettings.PostgresConnectionString,
                     npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
@@ -66,78 +96,60 @@ namespace Pedidos_CPE.DI
                         maxRetryDelay: TimeSpan.FromSeconds(5),
                         errorCodesToAdd: null));
             });
-            builder.Services.AddSingleton<SDKRepo>();
-            builder.Services.AddSingleton<ISDKRepo>(sp => sp.GetRequiredService<SDKRepo>());
-            builder.Services.AddScoped<IProductoSQLRepo, ProductoSQLRepo>();
-            builder.Services.AddScoped<IClienteProveedorSQLRepo, ClienteProveedorSQLRepo>();
-            builder.Services.AddScoped<IDocumentoSQLRepo, DocumentoSQLRepo>();
+        }
+
+        private static void InjectRepos(IServiceCollection services)
+        {
+            services.AddScoped<IProductoSQLRepo, ProductoSQLRepo>();
+            services.AddScoped<IClienteProveedorSQLRepo, ClienteProveedorSQLRepo>();
+            services.AddScoped<IDocumentoSQLRepo, DocumentoSQLRepo>();
 
             //for postgres
-            builder.Services.AddScoped<IDocumentoDtoRepo, DocumentoDtoRepo>();
-            builder.Services.AddScoped<IMovimientoDtoRepo, MovimientoDtoRepo>();
+            services.AddScoped<IDocumentoDtoRepo, DocumentoDtoRepo>();
+            services.AddScoped<IMovimientoDtoRepo, MovimientoDtoRepo>();
+        }
 
+        private static void InjectContpaqiSDK(IServiceCollection services)
+        {
+            services.AddSingleton<ISDKRepo, SDKRepo>();
 
-            //UseCases
-            #region SDK Services
+            //use cases
+            services.AddTransient<AddDocumentoYMovimientosSDKUseCase>();
+            services.AddTransient<TestSDKUseCase>();
+            services.AddTransient<SetDocumentoImpresoSDKUseCase>();
+            services.AddTransient<GetExistenciasSDKUseCase>();
+        }
 
-            builder.Services.AddTransient<AddDocumentoYMovimientosSDKUseCase>();
-            builder.Services.AddTransient<TestSDKUseCase>();
-            builder.Services.AddTransient<SetDocumentoImpresoSDKUseCase>();
-            builder.Services.AddTransient<GetExistenciasSDKUseCase>();
-
-            #endregion
-
-            #region SQL Services
-
+        private static void InjectSQLServices(IServiceCollection services)
+        {
             #region Productos
 
-            builder.Services.AddTransient<SearchProductosByNameSQLUseCase>();
-            builder.Services.AddTransient<GetProductosByIdsSQLUseCase>();
-            builder.Services.AddTransient<GetProductosByCodigosSQLUseCase>();
+            services.AddTransient<SearchProductosByNameSQLUseCase>();
+            services.AddTransient<GetProductosByIdsSQLUseCase>();
+            services.AddTransient<GetProductosByCodigosSQLUseCase>();
 
             #endregion
 
             #region ClienteProveedor
 
-            builder.Services.AddTransient<SearchClienteProveedorByNameSQLUseCase>();
+            services.AddTransient<SearchClienteProveedorByNameSQLUseCase>();
 
             #endregion
 
             #region Documentos
 
-            builder.Services.AddTransient<GetDocumentosByIdClienteAndDateSQLUseCase>();
+            services.AddTransient<GetDocumentosByIdClienteAndDateSQLUseCase>();
 
             #endregion
+        }
 
-            #endregion
-
-            #region Postgres Services
-
-            builder.Services.AddTransient<AddDocumentoYMovimientosDtoUseCase>();
-            builder.Services.AddTransient<GetDocumentosPendientesDtoUseCase>();
-            builder.Services.AddTransient<UpdateDocumentoPendienteDtoUseCase>();
-
-            #region Movimientos
-
-            builder.Services.AddTransient<GetMovimientosByDocumentoIdPostgresUseCase>();
-            builder.Services.AddTransient<UpdateMovimientosPostgresUseCase>();
-
-            #endregion
-
-            #endregion
-
-            //Other configs
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", builder =>
-                {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
-            });
-
-            return builder;
+        private static void InjectPostgresServices(IServiceCollection services)
+        {
+            services.AddTransient<AddDocumentoYMovimientosDtoUseCase>();
+            services.AddTransient<GetDocumentosPendientesDtoUseCase>();
+            services.AddTransient<UpdateDocumentoPendienteDtoUseCase>();
+            services.AddTransient<GetMovimientosByDocumentoIdPostgresUseCase>();
+            services.AddTransient<UpdateMovimientosPostgresUseCase>();
         }
 
         private static SDKSettings LoadSettings()

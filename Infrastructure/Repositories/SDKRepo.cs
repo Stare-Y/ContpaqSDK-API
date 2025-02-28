@@ -5,6 +5,7 @@ using Core.Domain.Interfaces.Services;
 using Core.Domain.Exceptions;
 using Core.Domain.Entities.DTOs;
 using Core.Domain.Interfaces.Repositories;
+using System.Diagnostics;
 
 namespace Infrastructure.Repositories
 {
@@ -16,9 +17,10 @@ namespace Infrastructure.Repositories
         private string _user;
         private string _password;
         private string _dirBinarios;
-        private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        private readonly ILogger _logger; // TODO: use real logging wich means attaching the mirosoft and use Debug.wl or Trace.wl
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
+        private readonly ILogger _logger;
 
         public SDKRepo(SDKSettings sDKSettings, ILogger logger)
         {
@@ -60,18 +62,12 @@ namespace Infrastructure.Repositories
             {
                 throw new SDKException("No se encontro MGWServicios.dll en el directorio especificado.");
             }
-
             _logger.Log("DLL encontrada en el directorio especificado.");
+
             _logger.Log("Intentando Iniciar sesion en SDK...");
-            try
-            {
-                SDK.fInicioSesionSDK(_user, _password);
-                _logger.Log("Inicio de sesion exitoso.");
-            }
-            catch (Exception ex)
-            {
-                throw new SDKException("No se pudo iniciar sesion en el SDK: " + ex);
-            }
+            SDK.fInicioSesionSDK(_user, _password);
+            _logger.Log("Inicio de sesion exitoso.");
+            
 
             var directory = Directory.GetCurrentDirectory();
             _logger.Log($"Intentando Setear el nombre del PAQ (directorio actual: {directory})...");
@@ -135,37 +131,29 @@ namespace Infrastructure.Repositories
         {
             await _semaphore.WaitAsync();
 
-            try
+            int attempts = 0;
+            int lError;
+            await Task.Run(() =>
             {
-                int attempts = 0;
-                int lError;
-                await Task.Run(() =>
+                while (true)
                 {
-                    while (true)
+                    //si empresa es test, se abre la empresa default, solo para el caso de uso testSDK
+                    lError = SDK.fAbreEmpresa(_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa));
+                    if (lError != 0)
                     {
-                        //si empresa es test, se abre la empresa default, solo para el caso de uso testSDK
-                        lError = SDK.fAbreEmpresa(_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa));
-                        if (lError != 0)
+                        Thread.Sleep(500);
+                        if (++attempts > 4)
                         {
-                            Thread.Sleep(500);
-                            if (++attempts > 4)
-                            {
-                                throw new SDKException($"No se pudo abrir la empresa: {_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa)}, Directortio actual: {Directory.GetCurrentDirectory()} ({lError}): ", lError);
-                            }
-                            Thread.Sleep(500);
+                            throw new SDKException($"No se pudo abrir la empresa: {_dirEmpresas + (empresa == "test" ? _empresaDefault : empresa)}, Directortio actual: {Directory.GetCurrentDirectory()} ({lError}): ", lError);
                         }
-                        else
-                        {
-                            _logger.Log($"Empresa: {empresa} abierta con exito, transaccion iniciada");
-                        }
+                        Thread.Sleep(500);
                     }
-                });
-            }
-            catch
-            {
-                _semaphore.Release();
-                throw;
-            }
+                    else
+                    {
+                        _logger.Log($"Empresa: {empresa} abierta con exito, transaccion iniciada");
+                    }
+                }
+            });
         }
 
         public void StopTransaction()
@@ -213,11 +201,6 @@ namespace Infrastructure.Repositories
 
         public async Task SetImpreso(int idDocumento, bool impressed)
         {
-            if (!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-
             await Task.Run(() =>
             {
                 if (idDocumento <= 0)
@@ -255,11 +238,6 @@ namespace Infrastructure.Repositories
 
         public async Task SetDatoDocumento(Dictionary<string, string> camposValores, int idDocumento)
         {
-            if (!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-
             await Task.Run(() =>
             {
                 int lError = SDK.fBuscarIdDocumento(idDocumento);
@@ -298,7 +276,6 @@ namespace Infrastructure.Repositories
                     }
                     throw new SDKException($"Error guardando los cambios previamente establecidos en fGuardaDocumento: ", lError);
                 }
-
             });
         }
 
@@ -308,11 +285,6 @@ namespace Infrastructure.Repositories
 
         public async Task<int> AddMovimiento(MovimientoDto movimientoDto, int idDocumento)
         {
-            if (!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-
             return await Task.Run(() =>
             {
                 tMovimiento movimiento = movimientoDto.ToSDKMovimiento();
@@ -335,11 +307,6 @@ namespace Infrastructure.Repositories
 
         public async Task<double> GetExistencias(string codigoProducto, string codigoAlmacen, DateTime fecha)
         {
-            if (!_transactionInProgress)
-            {
-                throw new SDKException("No se puede agregar un documento con movimiento sin una transacción activa.");
-            }
-
             string aAnio = fecha.Year.ToString();
             string aMes = fecha.Month.ToString();
             string aDia = fecha.Day.ToString();

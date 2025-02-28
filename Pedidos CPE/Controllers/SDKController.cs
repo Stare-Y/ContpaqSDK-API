@@ -42,7 +42,7 @@ namespace Pedidos_CPE.Controllers
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"Error al agregar documento y movimientos a SDK: {ex.Message}");
+                _logger.Log($"Error al agregar documento y movimientos a SDK: {ex.Message}");
                 return BadRequest(new ApiResponse { Success = false, Message = "No se pudo agregar el documento, y/o los movimientos al SDK ", ErrorDetails = ex.Message });
             }
         }

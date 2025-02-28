@@ -1,6 +1,7 @@
 ﻿using Core.Domain.Exceptions;
 using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
+using System.Diagnostics;
 
 namespace Core.Application.UseCases.SDK
 {
@@ -23,21 +24,21 @@ namespace Core.Application.UseCases.SDK
         {
             _logger.Log("Ejecutando caso de uso TestSDKUseCase...");
 
-            while (true)
+            try
             {
-                var canWork = await _sdkRepo.StartTransaction("test");
-                if (canWork)
-                {
-                    _logger.Log("Transacción de prueba iniciada con éxito.");
-                    _sdkRepo.StopTransaction();
-                    _logger.Log("Transacción de prueba finalizada con éxito.");
-                    return;
-                }
-                else
-                {
-                    _logger.Log("SDK Ocupado, esperando turno para TestSDKUseCase...");
-                    await Task.Delay(1000);
-                }
+                await _sdkRepo.StartTransaction("test");
+
+                _logger.Log("Transacción de prueba iniciada con éxito.");
+
+                _sdkRepo.StopTransaction();
+
+                _logger.Log("Transacción de prueba finalizada con éxito.");
+
+                return;
+            }
+            finally
+            {
+                _sdkRepo.StopTransaction();
             }
         }
     }

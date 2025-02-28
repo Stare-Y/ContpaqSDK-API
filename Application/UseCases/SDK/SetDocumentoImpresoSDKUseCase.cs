@@ -1,5 +1,6 @@
 ﻿using Core.Domain.Interfaces.Repositories;
 using Core.Domain.Interfaces.Services;
+using System.Diagnostics;
 
 namespace Core.Application.UseCases.SDK
 {
@@ -16,23 +17,19 @@ namespace Core.Application.UseCases.SDK
         public async Task Execute(int idDocumento, string empresa)
         {
             _logger.Log("Ejecutando caso de uso SetDocumentoImpresoSDK...");
-            while (true)
+            try
             {
-                var canWork = await _sdkRepo.StartTransaction(empresa);
-                if (canWork)
-                {
-                    await _sdkRepo.SetImpreso(idDocumento, true);
+                await _sdkRepo.StartTransaction(empresa);
+                
+                await _sdkRepo.SetImpreso(idDocumento, true);
 
-                    _sdkRepo.StopTransaction();
+                _logger.Log($"Documento {idDocumento}, establecido como impreso");
 
-                    _logger.Log($"Documento {idDocumento}, establecido como impreso");
-                    return;
-                }
-                else
-                {
-                    _logger.Log("SDK Ocupado, esperando turno para SetDocumentoImpresoSDK...");
-                    await Task.Delay(1000);
-                }
+                return;
+            }
+            finally
+            {
+                _sdkRepo.StopTransaction();
             }
         }
     }
