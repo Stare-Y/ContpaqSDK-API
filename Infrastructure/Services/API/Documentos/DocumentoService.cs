@@ -19,7 +19,7 @@ namespace Infrastructure.Services.API.Documentos
             var response = await _apiService.GetAsync<ApiResponse>("/Pendientes");
 
             if (!string.IsNullOrEmpty(response.ErrorDetails) && !response.Success)
-                throw new Exception("Error al obtener documentos pendientes: " + response.ErrorDetails);
+                throw new FileNotFoundException("Error al obtener documentos pendientes: " + response.ErrorDetails);
 
             // Deserialize manually
             var json = JsonConvert.SerializeObject(response.Data);

@@ -5,10 +5,10 @@ namespace Core.Application.ViewModels
 {
     public class VMEditSettings
     {
-        private readonly string _settingsPath = null!;
-        public VMEditSettings(string path)
+        private readonly string _baseDirectory = null!;
+        public VMEditSettings(string baseDirectory)
         {
-            _settingsPath = path;
+            _baseDirectory = baseDirectory;
             TerminalSettings = LoadTerminalSettings();
             BasculaSettings = LoadBasculaSettings();
         }
@@ -24,8 +24,8 @@ namespace Core.Application.ViewModels
 
         private TerminalSettings LoadTerminalSettings()
         {
-            var path = Path.Combine(_settingsPath, "TerminalSettings.json");
-            if (!File.Exists(_settingsPath))
+            var path = Path.Combine(_baseDirectory, "Data/TerminalSettings.json");
+            if (!File.Exists(path))
             {
                 throw new Exception($"TerminalSettings.json not found on path: {path}");
             }
@@ -43,8 +43,8 @@ namespace Core.Application.ViewModels
 
         private BasculaSettings LoadBasculaSettings()
         {
-            var path = Path.Combine(_settingsPath, "BasculaSettings.json");
-            if (!File.Exists(_settingsPath))
+            var path = Path.Combine(_baseDirectory, "Data/BasculaSettings.json");
+            if (!File.Exists(path))
             {
                 throw new Exception($"BasculaSettings.json not found on path: {path}");
             }
@@ -61,9 +61,9 @@ namespace Core.Application.ViewModels
         }
 
         public void SaveSettings()
-        {
+        {   
             var json = JsonSerializer.Serialize(TerminalSettings);
-            File.WriteAllText(_settingsPath, json);
+            File.WriteAllText(Path.Combine(_baseDirectory, "Data/TerminalSettings.json"), json);
         }
     }
 }

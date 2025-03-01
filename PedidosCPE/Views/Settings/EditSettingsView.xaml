@@ -65,14 +65,6 @@
                                 Text="{Binding Settings.Serie}"
                                 TextChanged="Serie_TextChanged" />
 
-                            <Label Style="{StaticResource LabelTabla}" Text="CodigoCteProv" />
-
-                            <Entry
-                                x:Name="CodigoCteProv"
-                                Style="{StaticResource EntrySettings}"
-                                Text="{Binding Settings.CodigoCteProv}"
-                                TextChanged="CodigoCteProv_TextChanged" />
-
                             <Label Style="{StaticResource LabelTabla}" Text="CodigoAlmacen" />
 
                             <Entry

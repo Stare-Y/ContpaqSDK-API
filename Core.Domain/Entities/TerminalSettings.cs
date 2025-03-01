@@ -5,7 +5,6 @@
         public string Empresa { get; set; } = string.Empty;
         public string CodigoConcepto { get; set; } = string.Empty;
         public string Serie { get; set; } = string.Empty;
-        public string CodigoCteProv { get; set; } = string.Empty;
         public string CodigoAlmacen { get; set; } = string.Empty;
         public string Referencia { get; set; } = string.Empty;
         public string ServerUri { get; set; } = string.Empty;

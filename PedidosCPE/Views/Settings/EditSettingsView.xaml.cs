@@ -34,11 +34,6 @@ public partial class EditSettingsView : ContentPage
         _vmEditSettings.TerminalSettings.Serie = Serie.Text;
     }
 
-    private void CodigoCteProv_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        _vmEditSettings.TerminalSettings.CodigoCteProv = CodigoCteProv.Text;
-    }
-
     private void CodigoAlmacen_TextChanged(object sender, TextChangedEventArgs e)
     {
         _vmEditSettings.TerminalSettings.CodigoAlmacen = CodigoAlmacen.Text;

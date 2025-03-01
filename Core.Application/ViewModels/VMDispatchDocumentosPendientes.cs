@@ -63,9 +63,18 @@ namespace Core.Application.ViewModels
 
         public async Task LoadDocumentosPendientes()
         {
-            DocumentosPendientes = new ObservableCollection<DocumentoDto>(await _documentoService.GetPendientes());
-            OnPropertyChanged(nameof(DocumentosPendientes));
-            return;
+            try
+            {
+                DocumentosPendientes = new ObservableCollection<DocumentoDto>(await _documentoService.GetPendientes());
+                OnPropertyChanged(nameof(DocumentosPendientes));
+                return;
+            }
+            catch(Exception ex)
+            {
+                if(ex.Message.Contains("encontraron"))
+                    throw new Exception($"No hay documentos pendientes por surtir, buen trabajo");
+                throw new Exception($"Error al obtener los documentos pendientes ({ex.Message})", ex);
+            }
         }
 
         public DocumentoDto DocumentoSeleccionado

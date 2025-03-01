@@ -46,7 +46,7 @@ namespace Core.Application.ViewModels
         public VMCreateDocumento()
         {
             Documento = new DocumentoDto();
-            ClienteProveedorSeleccionado = new ClienteProveedorDto { CRAZONSOCIAL = "Seleccionar Socio (Default BUilder)" };
+            ClienteProveedorSeleccionado = new ClienteProveedorDto { CRAZONSOCIAL = "Seleccionar Socio (Default Builder)" };
             Productos = new();
         }
 
@@ -69,7 +69,7 @@ namespace Core.Application.ViewModels
 
             Documento.CodConcepto = _terminalSettings.CodigoConcepto;
             Documento.Serie = _terminalSettings.Serie;
-            Documento.CodigoCteProv = _terminalSettings.CodigoCteProv;
+            Documento.CodigoCteProv = ClienteProveedorSeleccionado.CCODIGOCLIENTE;
             Documento.Referencia = _terminalSettings.Referencia;
             Documento.CodConcepto = _terminalSettings.CodigoConcepto;
             Documento.Fecha = DateTime.Now.ToString("MM/dd/yyyy");
