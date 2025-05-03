@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sincronizador", "Sincroniza
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComercialAPITest", "ComercialAPITest\ComercialAPITest.csproj", "{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BadPracticeReporter", "BadPracticeReporter\BadPracticeReporter.csproj", "{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,18 @@ Global
 		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|x64.Build.0 = Release|Any CPU
 		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|x86.ActiveCfg = Release|Any CPU
 		{C0AD850E-FB15-48E1-A4C5-8DB6FDA47597}.Release|x86.Build.0 = Release|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Debug|x64.Build.0 = Debug|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Debug|x86.Build.0 = Debug|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Release|x64.ActiveCfg = Release|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Release|x64.Build.0 = Release|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Release|x86.ActiveCfg = Release|Any CPU
+		{4E653CC4-7EF0-412D-8468-A900BA8F1DD6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
