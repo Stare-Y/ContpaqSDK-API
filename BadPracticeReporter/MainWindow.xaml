@@ -5,8 +5,65 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BadPracticeReporter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Bad Practice Reporter" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        
+        <!--Header container-->
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <Label 
+                Content="Rango de Fechas del Reporte" 
+                Grid.Row="0"
+                HorizontalAlignment="Center"/>
+            
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label 
+                    Content="Fecha inicial:"
+                    Grid.Column="0"/>
+                
+                <DatePicker 
+                    IsTodayHighlighted="True"
+                    x:Name="DatePickerStartDate"
+                    SelectedDateChanged="SelectedDateChanged"
+                    Grid.Column="1"/>
+                
+                <Label 
+                    Content="Fecha final:" 
+                    Grid.Column="2"/>
+                
+                <DatePicker
+                    IsTodayHighlighted="True"
+                    x:Name="DatePickerEndDate" 
+                    SelectedDateChanged="SelectedDateChanged" 
+                    Grid.Column="3"/>
+                
+                <Button 
+                    Content="Ejecutar" 
+                    x:Name="BtnExecuteReport" 
+                    Click="BtnExecuteReport_Click" 
+                    Grid.Column="4"/>
+            </Grid>
+        </Grid>
+
+        <!--Body container-->
+        <Grid Grid.Row="1">
+            
+        </Grid>
 
     </Grid>
 </Window>
