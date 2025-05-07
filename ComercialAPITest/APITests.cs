@@ -6,7 +6,7 @@ namespace ComercialAPITest
 {
     public class Tests : IDisposable
     {
-        private const string TARGET_EMPRESA = "adJOSE_DE_JESUS_MARQUE";
+        private const string TARGET_EMPRESA = "adCooperativa_2024";
         private const int HOW_MANY_REQUESTS = 10;
 
         private readonly IServiceProvider _serviceProvider;
@@ -91,14 +91,11 @@ namespace ComercialAPITest
         {
             _documentoDto = new DocumentoDto
             {
-                CodConcepto = "21",
+                CodConcepto = "2",
                 CodigoAgente = "",
-                CodigoCteProv = "POLITUBO",
+                CodigoCteProv = "279",
                 Fecha = DateTime.Now.ToString("MM/dd/yyyy"),
-                Impreso = false,
-                Serie = "A4",
-                SistemaOrigen = 205,
-                Surtido = false
+                Serie = "PA25",
             };
         }
 
@@ -107,7 +104,7 @@ namespace ComercialAPITest
             _movimientoDto = new MovimientoDto
             {
                 CodigoAlmacen = "1",
-                CodigoProducto = "F077",
+                CodigoProducto = "26",
                 Fecha = DateTime.Now,
                 Precio = 7.7,
                 Unidades = 60
