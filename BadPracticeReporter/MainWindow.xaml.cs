@@ -78,6 +78,7 @@ namespace BadPracticeReporter
             }   
             catch(Exception ex)
             {
+                Console.WriteLine($"Exception catched: {ex.Message}.");
                 MessageBox.Show("Error", ex.Message, MessageBoxButton.OK);
             }
             finally
