@@ -62,7 +62,7 @@
 
         <!--Body container-->
         <Grid Grid.Row="1">
-            
+            <Label Content="Hola"/>
         </Grid>
 
     </Grid>
