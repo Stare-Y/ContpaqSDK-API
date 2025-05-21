@@ -23,9 +23,9 @@ namespace BasculaTerminalTest
                 .WithUrl("http://localhost:5284/randomNumberHub")
                 .Build();
 
-            var receivedNumbers = new List<int>();
+            var receivedNumbers = new List<double>();
 
-            _hubConnection.On<int>("ReceiveNumber", (number) =>
+            _hubConnection.On<double>("ReceiveNumber", (number) =>
             {
                 receivedNumbers.Add(number);
                 Console.WriteLine($"Received Number: {number}");
@@ -44,6 +44,6 @@ namespace BasculaTerminalTest
             }
         }
             
-        private record NumberPayload(int Number);
+        private record NumberPayload(double Number);
     }
 }

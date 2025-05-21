@@ -1,6 +1,5 @@
-using System.Collections.Concurrent;
-using System.Diagnostics;
 using BasculaTerminalApi;
+using BasculaTerminalApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +10,11 @@ builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<BasculaService>();
 
 var app = builder.Build();
 
-app.MapHub<RandomNumberHub>("/randomNumberHub");
+app.MapHub<SerialPortHub>("/randomNumberHub");
 
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromMinutes(2)});
     
