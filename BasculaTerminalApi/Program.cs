@@ -14,7 +14,7 @@ builder.Services.AddSingleton<BasculaService>();
 
 var app = builder.Build();
 
-app.MapHub<SerialPortHub>("/randomNumberHub");
+app.MapHub<SerialPortHub>("/basculaSocket");
 
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromMinutes(2)});
     

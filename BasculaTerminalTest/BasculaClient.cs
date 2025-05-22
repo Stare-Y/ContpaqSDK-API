@@ -20,7 +20,7 @@ namespace BasculaTerminalTest
         public async Task WebSocketTesting()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5284/randomNumberHub")
+                .WithUrl("http://localhost:5284/basculaSocket")
                 .Build();
 
             var receivedNumbers = new List<double>();
