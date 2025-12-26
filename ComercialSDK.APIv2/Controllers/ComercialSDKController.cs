@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ComercialSDK.APIv2.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ComercialSDKController : ControllerBase
     {
         private readonly IComercialSDKService _comercialSDKService;
@@ -17,9 +17,16 @@ namespace ComercialSDK.APIv2.Controllers
         [HttpPost("Document")]
         public async Task<IActionResult> AddDocument(AddDocumentRequest request)
         {
-            int documentId = await _comercialSDKService.AddDocumentoAsync(request.Document, request.Empresa);
-            
-            return Ok(documentId);//TODO: build proper response object later
+            try
+            {
+                AddDocumentResult result = await _comercialSDKService.AddDocumentoAsync(request.Document, request.Empresa);
+
+                return Ok(new GenericResponse<int> { Data = result.DocumentId, Message = string.IsNullOrEmpty(result.Notes) ? "Document Generated Successfully" : result.Notes });//TODO: build proper response object later
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new GenericResponse<object> { Data = null, Message = ex.Message });
+            }
         }
 
         [HttpGet("Health")]

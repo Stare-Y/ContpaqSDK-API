@@ -5,8 +5,8 @@ namespace ComercialSDK.Application.DTOs
     public record MovimientoDto
     {
         public int Id { get; set; }
-        public string CodigoProducto { get; init; } = string.Empty;
-        public string CodigoAlmacen { get; init; } = string.Empty;
+        public required string CodigoProducto { get; init; }
+        public required string CodigoAlmacen { get; init; }
         public string CodigoClasificacion { get; init; } = string.Empty;
         public double Unidades { get; init; }
         public double Precio { get; init; }

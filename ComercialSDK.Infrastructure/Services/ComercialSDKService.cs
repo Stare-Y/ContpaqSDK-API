@@ -9,7 +9,7 @@ using SDK = ComercialSDK.Domain.Interfaces.ComercialSDKConnector;
 
 namespace ComercialSDK.Infrastructure.Services
 {
-    public class ComercialSDKService : IComercialSDKService
+    public class ComercialSDKService : IComercialSDKService , IDisposable
     {
         private readonly ILogger _logger;
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
@@ -22,6 +22,12 @@ namespace ComercialSDK.Infrastructure.Services
             _settings = options.Value;
 
             KickOffSDK();
+        }
+
+        public void Dispose()
+        {
+            SDK.fTerminaSDK();
+            _logger.Information("Se supon que el sdk ya se libero exitosamente.");
         }
 
         public void KickOffSDK()
@@ -166,11 +172,13 @@ namespace ComercialSDK.Infrastructure.Services
             _semaphore.Release();
         }
 
-        public async Task<int> AddDocumentoAsync(DocumentoDto documentoDto, string empresa)
+        public async Task<AddDocumentResult> AddDocumentoAsync(DocumentoDto documentoDto, string empresa)
         {
             await _semaphore.WaitAsync();
 
             StartTransaction(empresa);
+
+            string notes = string.Empty;
 
             try
             {
@@ -192,7 +200,7 @@ namespace ComercialSDK.Infrastructure.Services
                 lError = SDK.fAltaDocumento(ref idDocumento, ref documentoStruct);
                 if (lError != 0)
                 {
-                    throw new InvalidOperationException($"Error al agregar documento para concepto {documentoStruct.aCodConcepto}, serie {documentoStruct.aSerie}. ({SDK.ParseErrorNumber(lError)})");
+                    throw new InvalidOperationException($"Error al agregar documento para concepto {documentoStruct.aCodConcepto}, serie {documentoStruct.aSerie}, cte/prov {documentoDto.CodigoCteProv}. ({SDK.ParseErrorNumber(lError)})");
                 }
 
                 _logger.Information($"Documento agregado exitosamente. Id SQL: {idDocumento}, Serie: {documentoStruct.aSerie}, Folio: {folio}.");
@@ -210,18 +218,20 @@ namespace ComercialSDK.Infrastructure.Services
                             lError = SDK.fAltaMovimiento(idDocumento, ref idMovimiento, ref movimientoStruct);
                             if (lError != 0)
                             {
-                                throw new InvalidOperationException($"Error al agregar movimiento para el documento Id SQL: {idDocumento}. ({SDK.ParseErrorNumber(lError)})");
+                                throw new InvalidOperationException($"{SDK.ParseErrorNumber(lError)}");
                             }
                             _logger.Information($"Movimiento agregado exitosamente al documento Id SQL: {idDocumento}. Id Movimiento: {idMovimiento}, Codigo Producto: {movimientoStruct.aCodProdSer}, Cantidad: {movimientoStruct.aUnidades}.");
                         }
                     }
                     catch (Exception ex)
                     {
+                        notes += $" (Error en agregar movimientos al documento Id SQL: {idDocumento}. Detalles: {ex.Message})";
                         _logger.Error($"Error al agregar movimientos al documento Id SQL: {idDocumento}. Detalles: {ex.Message}");
                     }
                 }
                 else
                 {
+                    notes += $" ( No se proporcionaron movimientos para el documento Id SQL.)";
                     _logger.Warning($"No se proporcionaron movimientos para el documento Id SQL: {idDocumento}. Un documento deberia tener al menos un movimiento para ser válido.");
                 }
 
@@ -252,10 +262,15 @@ namespace ComercialSDK.Infrastructure.Services
                     }
                     catch (Exception ex)
                     {
+                        notes += $" (Problema actualizando campos extra para id: {idDocumento}. Detalles: {ex.Message})";
                         _logger.Error($"Error al actualizar campos extra para el documento Id SQL: {idDocumento}. Detalles: {ex.Message}");
                     }
 
-                return idDocumento;
+                return new AddDocumentResult
+                {
+                    DocumentId = idDocumento,
+                    Notes = notes
+                };
             }
             catch (Exception ex)
             {

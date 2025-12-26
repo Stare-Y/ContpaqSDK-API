@@ -15,7 +15,7 @@ public record DocumentoDto
     /// <summary>
     /// REQUIRED Format: "MM/dd/yyyy"
     /// </summary>
-    public required string Fecha { get; init; } 
+    public required DateTime Fecha { get; init; } 
     public required string CodigoCteProv { get; init; } 
     public string RazonSocial { get; init; } = string.Empty;
     public string CodigoAgente { get; init; } = string.Empty;
@@ -42,7 +42,7 @@ public record DocumentoDto
             aSistemaOrigen = SistemaOrigen,
             aCodConcepto = CodConcepto,
             aSerie = Serie,
-            aFecha = Fecha,
+            aFecha = Fecha.ToString("MM/dd/yyyy"),
             aCodigoCteProv = CodigoCteProv,
             aCodigoAgente = CodigoAgente,
             aReferencia = Referencia,

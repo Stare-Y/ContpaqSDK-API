@@ -11,7 +11,7 @@ public interface IComercialSDKService
     /// <returns>
     /// The PK of the created document in the SQL Database
     /// </returns>
-    Task<int> AddDocumentoAsync(DocumentoDto documentoDto, string empresa);
+    Task<AddDocumentResult> AddDocumentoAsync(DocumentoDto documentoDto, string empresa);
 
     Task EnsureWorking();
 }
