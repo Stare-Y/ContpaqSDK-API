@@ -1,7 +1,0 @@
-{
-  "PuertoBascula": "COM3",
-  "BaudRateBascula": 9600,
-  "DataBitsBascula": 8,
-  "WriteCommandBascula": "P",
-  "SufijoBascula": "kg"
-}
