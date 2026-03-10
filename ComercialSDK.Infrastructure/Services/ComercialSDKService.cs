@@ -172,7 +172,7 @@ namespace ComercialSDK.Infrastructure.Services
             _semaphore.Release();
         }
 
-        public async Task<AddDocumentResult> AddDocumentoAsync(DocumentoDto documentoDto, string empresa)
+        public async Task<AddDocumentResultDto> AddDocumentoAsync(DocumentoDto documentoDto, string empresa)
         {
             await _semaphore.WaitAsync();
 
@@ -266,9 +266,10 @@ namespace ComercialSDK.Infrastructure.Services
                         _logger.Error($"Error al actualizar campos extra para el documento Id SQL: {idDocumento}. Detalles: {ex.Message}");
                     }
 
-                return new AddDocumentResult
+                return new AddDocumentResultDto
                 {
                     DocumentId = idDocumento,
+                    DocumentFolio = $"{documentoStruct.aSerie}{folio}",
                     Notes = notes
                 };
             }

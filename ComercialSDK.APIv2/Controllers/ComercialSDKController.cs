@@ -19,9 +19,9 @@ namespace ComercialSDK.APIv2.Controllers
         {
             try
             {
-                AddDocumentResult result = await _comercialSDKService.AddDocumentoAsync(request.Document, request.Empresa);
+                AddDocumentResultDto result = await _comercialSDKService.AddDocumentoAsync(request.Document, request.Empresa);
 
-                return Ok(new GenericResponse<int> { Data = result.DocumentId, Message = string.IsNullOrEmpty(result.Notes) ? "Document Generated Successfully" : result.Notes });//TODO: build proper response object later
+                return Ok(new GenericResponse<ContpaqiComercialResult> { Data = new ContpaqiComercialResult { ResultingId = result.DocumentId, ResultingFolio = result.DocumentFolio, Message = result.Notes }, Message = string.IsNullOrEmpty(result.Notes) ? "Document Generated Successfully" : result.Notes });//TODO: build proper response object later
             }
             catch (Exception ex)
             {
